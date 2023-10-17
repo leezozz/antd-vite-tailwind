@@ -27,6 +27,7 @@ import type { ColumnsType } from "antd/es/table";
 import type { Dayjs } from "dayjs";
 import { createStyles } from "antd-style";
 import ProjectCreateForm from "./components/ProjectCreateForm";
+import MemberConfigForm from "./components/MemberConfigForm";
 
 type ProjectStatus = "1" | "2" | "3";
 interface Project {
@@ -91,6 +92,11 @@ const useStyle = createStyles(() => ({
   "my-modal-content": {
     padding: "0 !important",
   },
+  'custom-member-management-modal': {
+    '.ant-modal-confirm-paragraph': {
+      maxWidth: '100%',
+    }
+  }
 }));
 
 const ProjectListPage = () => {
@@ -138,6 +144,22 @@ const ProjectListPage = () => {
     });
   };
 
+  const handleConfigMember = (id: string) => {
+    const { destroy } = modal.info({
+      className: styles['custom-member-management-modal'],
+      title: (
+        <div className="flex justify-between px-6 border-0 border-b-[1px] border-slate-200 border-solid">
+          <p>成员管理</p>
+          <CloseOutlined onClick={() => destroy()} />
+        </div>
+      ),
+      footer: null,
+      width: 1200,
+      content: <MemberConfigForm projectId={id} onClosed={() => destroy()} />,
+      icon: <></>,
+    });
+  };
+
   const { submit, reset } = search;
   const columns: ColumnsType<Project> = [
     {
@@ -168,9 +190,9 @@ const ProjectListPage = () => {
       dataIndex: "operation",
       key: "operation",
       width: 350,
-      render: () => (
+      render: (_, {id}) => (
         <>
-          <Button type="link">成员管理</Button>
+          <Button type="link" onClick={() => handleConfigMember(id)}>成员管理</Button>
           <Divider type="vertical" />
           <Button type="link">编辑</Button>
           <Divider type="vertical" />

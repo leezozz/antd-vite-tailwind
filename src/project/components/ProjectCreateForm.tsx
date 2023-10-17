@@ -1,98 +1,127 @@
-import React from "react";
-import { Button, Form, Input, Select, Col, Row } from "antd";
-import type { FormInstance } from "antd/es/form";
-const { Option } = Select;
+import React, { useState } from "react";
+import { Button, Form, Input, Select, Col, Row, DatePicker } from "antd";
+import { Dayjs } from "dayjs";
 
-const ProjectCreateForm: React.FC = () => {
-  const formRef = React.useRef<FormInstance>(null);
+export interface CreateFormData {
+  name: string;
+  id: string;
+  time: Dayjs;
+  category: string;
+  director: string;
+  description: string;
+}
 
-  const onGenderChange = (value: string) => {
-    switch (value) {
-      case "male":
-        formRef.current?.setFieldsValue({ note: "Hi, man!" });
-        break;
-      case "female":
-        formRef.current?.setFieldsValue({ note: "Hi, lady!" });
-        break;
-      case "other":
-        formRef.current?.setFieldsValue({ note: "Hi there!" });
-        break;
-      default:
-        break;
-    }
+interface ProjectCreateFormProps {
+  onFinish: (values: CreateFormData) => void;
+  onClosed: () => void;
+}
+
+const ProjectCreateForm: React.FC<ProjectCreateFormProps> = ({
+  onFinish,
+  onClosed,
+}) => {
+  const [form] = Form.useForm();
+  const [loading, setLoading] = useState(false);
+  const handleSubmit = () => {
+    form.submit();
   };
 
-  const onFinish = (values: any) => {
-    console.log(values);
-  };
-
-  const onReset = () => {
-    formRef.current?.resetFields();
-  };
-
-  const onFill = () => {
-    formRef.current?.setFieldsValue({ note: "Hello world!", gender: "male" });
+  const handleFinish = () => {
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+      onFinish(form.getFieldsValue());
+    }, 1000);
   };
 
   return (
-    <Form
-      layout={"inline"}
-      ref={formRef}
-      name="control-ref"
-      onFinish={onFinish}
-      style={{}}
-    >
-      <Row>
-        <Col>
-          <Form.Item name="note" label="Note" rules={[{ required: true }]}>
-            <Input />
-          </Form.Item>
-        </Col>
-        <Col>
-          <Form.Item name="gender" label="Gender" rules={[{ required: true }]}>
-            <Select
-              placeholder="Select a option and change input text above"
-              onChange={onGenderChange}
-              allowClear
-            >
-              <Option value="male">male</Option>
-              <Option value="female">female</Option>
-              <Option value="other">other</Option>
-            </Select>
-          </Form.Item>
-        </Col>
-      </Row>
-
-      <Form.Item
-        noStyle
-        shouldUpdate={(prevValues, currentValues) =>
-          prevValues.gender !== currentValues.gender
-        }
+    <div>
+      <Form
+        className="border-b px-6"
+        layout={"vertical"}
+        form={form}
+        name="control-ref"
+        onFinish={handleFinish}
+        initialValues={{
+          name: "",
+          id: "2020BJIT0011",
+          time: "",
+          category: "default",
+          director: "张三",
+          description: "",
+        }}
       >
-        {({ getFieldValue }) =>
-          getFieldValue("gender") === "other" ? (
+        <Row gutter={24}>
+          <Col span={24}>
             <Form.Item
-              name="customizeGender"
-              label="Customize Gender"
+              name="name"
+              label="项目名称"
               rules={[{ required: true }]}
             >
-              <Input />
+              <Input placeholder="请输入" />
             </Form.Item>
-          ) : null
-        }
-      </Form.Item>
-      <Form.Item>
-        <Button type="primary" htmlType="submit">
-          Submit
+          </Col>
+        </Row>
+        <Row gutter={24}>
+          <Col span={12}>
+            <Form.Item name="id" label="项目编号" rules={[{ required: true }]}>
+              <Input placeholder="请输入" disabled />
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item
+              name="time"
+              label="立项时间"
+              rules={[{ required: true }]}
+            >
+              <DatePicker className="w-full" placeholder="请选择" />
+            </Form.Item>
+          </Col>
+        </Row>
+        <Row gutter={24}>
+          <Col span={12}>
+            <Form.Item
+              name="category"
+              label="行业分类"
+              rules={[{ required: true }]}
+            >
+              <Select
+                options={[
+                  { value: "default", label: "默认" },
+                  { value: "categoryA", label: "分类A" },
+                  { value: "categoryB", label: "分类B" },
+                ]}
+              />
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item name="director" label="负责经理">
+              <Input placeholder="请输入" disabled />
+            </Form.Item>
+          </Col>
+        </Row>
+        <Row>
+          <Col span={24}>
+            <Form.Item name="description" label="立项说明">
+              <Input.TextArea placeholder="请输入" />
+            </Form.Item>
+          </Col>
+        </Row>
+      </Form>
+      <div className="flex justify-end space-x-3 px-6 py-3">
+        <Button htmlType="button" onClick={onClosed}>
+          取消
         </Button>
-        <Button htmlType="button" onClick={onReset}>
-          Reset
+        <Button
+          type="primary"
+          htmlType="submit"
+          onClick={handleSubmit}
+          loading={loading}
+        >
+          新建
         </Button>
-        <Button type="link" htmlType="button" onClick={onFill}>
-          Fill form
-        </Button>
-      </Form.Item>
-    </Form>
+      </div>
+    </div>
   );
 };
 
