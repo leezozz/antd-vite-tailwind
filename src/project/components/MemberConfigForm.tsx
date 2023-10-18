@@ -139,8 +139,9 @@ const MemberConfigForm: React.FC<MemberConfigFormProps> = ({ projectId }) => {
         添加成员
       </Button>
       <Table
-        dataSource={members}
         rowKey="id"
+        pagination={false}
+        dataSource={members}
         columns={columns}
         loading={loading}
         scroll={{
