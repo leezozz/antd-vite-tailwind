@@ -185,7 +185,7 @@ const MemberModifyForm: React.FC<MemberModifyFormProps> = ({
   const handleSubmit = () => {
     console.log("提交");
 
-    if (selectedRowKeys) {
+    if (selectedRowKeys.length) {
       // TODO: 提交接口
       // TODO: 提交成功，onfinish
       onFinish()

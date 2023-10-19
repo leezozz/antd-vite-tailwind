@@ -15,7 +15,7 @@ dependencies:
     specifier: ^3.7.8
     version: 3.7.8(react@18.2.0)
   antd:
-    specifier: ^5.10.0
+    specifier: ^5.10.1
     version: 5.10.1(react-dom@18.2.0)(react@18.2.0)
   antd-style:
     specifier: ^3.5.0
