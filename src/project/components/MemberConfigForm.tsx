@@ -99,15 +99,12 @@ const MemberConfigForm: React.FC<MemberConfigFormProps> = ({ projectId }) => {
   };
 
   const handleAppendMember = () => {
-    const handleAppended = async (newMembers: Member[]) => {
-      setLoading(true);
-      await new Promise(resolve => {
-        setTimeout(() => {
-          setMembers([...newMembers, ...members]);
-          setLoading(false);
-          resolve(undefined);
-        }, 600);
-      });
+    const handleAppended = async () => {
+      console.log('回调')
+      destroy()
+      // TODO: 重新获取成员管理列表
+      // setLoading(true);
+      // setLoading(false);
     };
 
     const { destroy } = modal.info({
