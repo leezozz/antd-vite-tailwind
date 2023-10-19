@@ -2,9 +2,6 @@ import { Button, Divider, Input, Select, Table, Tooltip } from "antd";
 import React, { useEffect, useState } from "react";
 import { CloseOutlined, SearchOutlined, UserOutlined } from "@ant-design/icons";
 import type { ColumnsType } from "antd/es/table";
-import type { SelectProps } from 'antd';
-import jsonp from 'fetch-jsonp';
-import qs from 'qs';
 import cx from "classnames";
 import {
   Member,
@@ -18,11 +15,11 @@ type selectedRowInfoType = {
 }
 
 interface MemberModifyFormProps {
-  onFinish: (members: Member[]) => void;
+  onFinish: () => void;
   onClosed: () => void;
 }
 
-const mockDatas = JSON.stringify(generateMockMembers(10));
+const mockDatas = JSON.stringify(generateMockMembers(5));
 const mockMembers = JSON.parse(mockDatas);
 
 const useStyle = createStyles({
@@ -86,6 +83,7 @@ const MemberModifyForm: React.FC<MemberModifyFormProps> = ({
   const fetch = (value: string) => {
     console.log('fetch', value, selectedTableRef, )
   
+    // mock逻辑，待删除--------------------------------------------------------
     const fake = () => {
       console.log('fetch', value)
       setMembers(mockMembers.filter(member => member.id.includes(value)));
@@ -100,27 +98,20 @@ const MemberModifyForm: React.FC<MemberModifyFormProps> = ({
           console.log('否则', value, JSON.stringify(selectedRowKeys), setSelectedRowInfos, selectedRowInfos?.map((item) => item.id))
           setSelectedRowKeys(selectedRowInfos?.map((item) => item.id));
         }, 1000
-      )
+        )
     }
+    // --------------------------------------------------------
+    
+    
+      // TODO: 不管参数存在与否，获取新数据之后，重新勾选之前选中的
+      // const { data } = useRequest(async () => {
+      //   const result = await getData();
+      //   return result.data;
+      //   setMembers(result.data)
+      //   setSelectedRowKeys(selectedRowInfos?.map((item) => item.id));
+      // });
   };
 
-
-  // const fetch = (value: string, callback: Function) => {
-  //   console.log('fetch', value, callback)
-  //   if (timeout) {
-  //     clearTimeout(timeout)
-  //     timeout = null
-  //   }
-
-  //   const getSearchResult = async() => {
-  //     const res = await fetch('xxx', {
-  //       searchValue: value
-  //     })
-  //     if (!res.error) {
-  //       callback(res)
-  //     }
-  //   }
-  // }
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     console.log(`handleSearch`, e, e.target)
@@ -128,18 +119,60 @@ const MemberModifyForm: React.FC<MemberModifyFormProps> = ({
     fetch(e.target.value);
   };
 
-  const onSelectChange = (newSelectedRowKeys: React.Key[], selectedRows: any) => {
-    console.log('newSelectedRowKeys', newSelectedRowKeys, selectedRows)
-    setSelectedRowKeys(newSelectedRowKeys);
-    // // TODO: 确定哪个是去除勾选的
-    setSelectedRowInfos(selectedRows)
+  // 选中项发生变化时的回调
+  const handleChange = (newSelectedRowKeys: React.Key[], selectedRows: any, info: {type}) => {
+    console.log('newSelectedRowKeys', newSelectedRowKeys, selectedRows, info)
+  }
+  
+  // 用户手动选择/取消选择某行的回调
+  const handleSelect = (record, selected, selectedRows, nativeEvent) => {
+    console.log('用户手动选择/取消选择某行的回调', record, selected, selectedRows, nativeEvent)
+    if (selected) {
+      console.log('如果勾选')
+      setSelectedRowKeys([...selectedRowKeys, record.id]);
+      setSelectedRowInfos([...selectedRowInfos, record])
+    } else {
+      console.log('如果去除勾选')
+      console.log('selectedRowKeys.filter(item => item !== record.id)', selectedRowKeys.filter(item => item !== record.id))
+      console.log('selectedRowInfos.filter((item: any) => item.id !== record.id)', JSON.stringify(selectedRowInfos))
+      console.log('---', selectedRowInfos.filter((item: any) => item.id !== record.id))
+      setSelectedRowKeys(selectedRowKeys?.filter(item => item !== record.id));
+      setSelectedRowInfos(selectedRowInfos?.filter((item: any) => item.id !== record.id))
+    }
+  }
+
+  // 用户手动选择/取消选择所有行的回调
+  const handleSelectAll = (selected, selectedRows, changeRows) => {
+    console.log('用户手动选择/取消选择所有行的回调', selected, selectedRows, changeRows)
+    if (selected) {
+      const newSelectedkeys = [...selectedRowKeys, ...changeRows.map((item) => item.id)]
+      const newSelectedRowInfos = [...selectedRowInfos, ...changeRows]
+      console.log('全部勾选', newSelectedkeys, newSelectedRowInfos)
+      setSelectedRowKeys(newSelectedkeys)
+      setSelectedRowInfos(newSelectedRowInfos)
+    } else {
+      // 根据 旧的选中id数组、现在状态改变的数组 过滤掉出取消勾选的信息
+      const handleCounterElection = (allSelected, changeItem) => {
+        const res = allSelected.filter((item) => {
+         return !changeItem.some((arg) => (arg.id === (item?.id ? item?.id : item)))
+        })
+        return res
+      }
+      console.log('aaa', handleCounterElection(selectedRowKeys, changeRows))
+
+      setSelectedRowKeys(handleCounterElection(selectedRowKeys, changeRows))
+      setSelectedRowInfos(handleCounterElection(selectedRowInfos, changeRows))
+    }
   }
 
   const rowSelection = {
     selectedRowKeys,
-    onChange: onSelectChange,
+    onChange: handleChange,
+    onSelect: handleSelect,
+    onSelectAll: handleSelectAll,
   };
   console.log('selectedRowKeys', selectedRowKeys)
+  console.log('selectedRowInfos', selectedRowInfos)
 
   // 添加成员弹框中的删除
   const handleDeleteMember = (item: any) => {
@@ -150,14 +183,19 @@ const MemberModifyForm: React.FC<MemberModifyFormProps> = ({
   }
 
   const handleSubmit = () => {
-    console.log("新建");
+    console.log("提交");
+
+    if (selectedRowKeys) {
+      // TODO: 提交接口
+      // TODO: 提交成功，onfinish
+      onFinish()
+    } 
   };
 
   return (
     <div className="flex flex-col h-[480px] overflow-hidden">
       <div className="flex divide-x pl-6 flex-1 overflow-hidden">
         <div className="flex-1 space-y-3 py-[12px] pr-[16px] border-0 border-r-[1px] border-slate-200 border-solid">
-          {/* {inputValue} */}
           <Input
             className={styles['custom-search-container-style']}
             prefix={<SearchOutlined />}
@@ -205,8 +243,8 @@ const MemberModifyForm: React.FC<MemberModifyFormProps> = ({
         <Button htmlType="button" onClick={onClosed}>
           取消
         </Button>
-        <Button type="primary" htmlType="submit" onClick={handleSubmit}>
-          新建
+        <Button type="primary" htmlType="submit" disabled={!selectedRowInfos.length} onClick={handleSubmit}>
+          提交
         </Button>
       </div>
     </div>
