@@ -69,33 +69,37 @@ const MemberConfigForm: React.FC<MemberConfigFormProps> = ({ projectId }) => {
       key: "operation",
       render: (_, { id }) => (
         <>
-          <Popconfirm
-            title="Delete the task"
-            description="Are you sure to delete this task?"
-            onConfirm={() => handleDeleteMember(id)}
-            okText="Yes"
-            cancelText="No"
-          >
-            <Button type="link" danger>
-              删除
-            </Button>
-          </Popconfirm>
+          <Button type="link" danger onClick={() => handleDeleteModal(id)}>删除</Button>
         </>
       ),
     },
   ];
 
-  const handleDeleteMember = async (id: string) => {
-    setLoading(true);
-    const success = (await new Promise(resolve => {
-      setTimeout(() => {
-        resolve(true);
-      }, 600);
-    })) as boolean;
-    if (success) {
-      setMembers(members.filter(member => member.id !== id));
+  const handleDeleteModal = (id: string) => {
+    const handleDeleteMember = () => {
+      console.log('删除', id)
+      // TODO: 删除接口
+      destroy()
+      // TODO: 重新获取列表接口 【待确定：footer的提交、取消按钮应该不需要】
+      // setLoading(true);
+      // setLoading(false);
     }
-    setLoading(false);
+
+    const { destroy } = Modal.warning({
+      title: '删除项目',
+      content: '是否删除该项目',
+      // centered: true,
+      footer: <>
+         <div
+            style={{
+              display: 'flex',
+              justifyContent: 'flex-end'
+            }}>
+            <Button onClick={() => destroy()}>取消</Button>
+            <Button className="ml-[10px]" type="primary" danger onClick={handleDeleteMember} >确定</Button>
+          </div>
+      </>,
+    });
   };
 
   const handleAppendMember = () => {
@@ -130,6 +134,7 @@ const MemberConfigForm: React.FC<MemberConfigFormProps> = ({ projectId }) => {
     <div className="space-y-3 px-6 py-4">
       <Button
         type="primary"
+        className="mb-[4px]"
         icon={<PlusOutlined />}
         onClick={handleAppendMember}
       >
@@ -137,6 +142,7 @@ const MemberConfigForm: React.FC<MemberConfigFormProps> = ({ projectId }) => {
       </Button>
       <Table
         rowKey="id"
+        className="mb-[8px!important]"
         pagination={false}
         dataSource={members}
         columns={columns}
