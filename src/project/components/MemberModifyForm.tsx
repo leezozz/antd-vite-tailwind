@@ -2,12 +2,15 @@ import { Button, Divider, Input, Select, Table, Tooltip } from "antd";
 import React, { useEffect, useState } from "react";
 import { CloseOutlined, SearchOutlined, UserOutlined } from "@ant-design/icons";
 import type { ColumnsType } from "antd/es/table";
+import type { TableRowSelection } from 'antd/es/table/interface';
 import cx from "classnames";
+// import Mock from 'mockjs';
 import {
   Member,
   generateMockMembers,
 } from "../data/member";
 import { createStyles } from "antd-style";
+import { usePagination } from "ahooks";
 
 type selectedRowInfoType = {
   name: string
@@ -19,20 +22,29 @@ interface MemberModifyFormProps {
   onClosed: () => void;
 }
 
-const mockDatas = JSON.stringify(generateMockMembers(5));
+const mockDatas = JSON.stringify(generateMockMembers(50));
 const mockMembers = JSON.parse(mockDatas);
 
 const useStyle = createStyles({
   'custom-table-container-style': {
     '.ant-table-body': {
-      height: '300px',
       'table': {
         height: '100%'
       }
     }
   },
+  'custom-table-pagination-style': {
+    '.ant-table-body': {
+    },
+    '.ant-table-pagination': {
+      marginBottom: '12px!important'
+    },
+    '.ant-pagination-total-text': {
+      flex: 1
+    }
+  },
   'custom-search-container-style': {
-    
+    marginBottom: '13px'
   },
   'selectd-member-list-info': {
     display: 'flex',
@@ -62,54 +74,69 @@ const MemberModifyForm: React.FC<MemberModifyFormProps> = ({
   onFinish,
   onClosed,
 }) => {
-  const { styles } =  useStyle()
+  const { styles } = useStyle()
   const [members, setMembers] = useState<Member[]>();
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const [selectedRowInfos, setSelectedRowInfos] = useState<selectedRowInfoType[]>([]);
-  const [loading, setLoading] = useState(true);
+  // const [loading, setLoading] = useState(true);
   const [inputValue, setInputValue] = useState<string>('');
   const selectedTableRef = React.useRef<HTMLDivElement>(null)
 
-  let timeout: ReturnType<typeof setTimeout> | null;
+
+  const userList = (current: number, pageSize: number, timeLimit: number) => {
+    console.log('----', current, pageSize, timeLimit)
+
+    // TODO: 接口请求
+    // const { data, loading, run } = useRequest(getSearchList, {
+    //   debounceWait: timeLimit,
+    //   manual: true,
+    // });
+    const res = JSON.stringify(generateMockMembers(30))
+    setSelectedRowKeys(selectedRowInfos?.map((item) => item.id));
+    console.log('😈', res, JSON.stringify(selectedRowInfos), selectedRowInfos, JSON.stringify(selectedRowKeys))
+    return {
+      total: 30,
+      list: JSON.parse(res)
+    }
+  };
+
+  async function getUserList(params: {
+    current: number;
+    pageSize: 10;
+  }): Promise<{ total: number; list: Member[] }> {
+    console.log('++++++++++++', params)
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(userList(params.current, params.pageSize, 0));
+      }, 1000);
+    });
+  }
+
+  const { data, loading, pagination } = usePagination(getUserList, {
+    defaultPageSize: 20,
+  });
+  
+  const paginationConfig = {
+    current: pagination.current,
+    pageSize: pagination.pageSize,
+    total: pagination.total,
+    showTotal: (total: number) => `共${total}条`,
+    onChange: pagination.onChange,
+  } 
+  console.log('data 😯', data, data?.list)
 
   useEffect(() => {
     setTimeout(() => {
       setMembers(mockMembers);
-      setLoading(false);
     }, 800);
   }, []);
 
 
   const fetch = (value: string) => {
-    console.log('fetch', value, selectedTableRef, )
-  
-    // mock逻辑，待删除--------------------------------------------------------
-    const fake = () => {
-      console.log('fetch', value)
-      setMembers(mockMembers.filter(member => member.id.includes(value)));
-    };
-    if (value) {
-      console.log('如果value存在', value)
-      timeout = setTimeout(fake, 300);
-    } else {
-      setMembers(JSON.parse(mockDatas))
-      setTimeout(
-        () => {
-          console.log('否则', value, JSON.stringify(selectedRowKeys), setSelectedRowInfos, selectedRowInfos?.map((item) => item.id))
-          setSelectedRowKeys(selectedRowInfos?.map((item) => item.id));
-        }, 1000
-        )
-    }
-    // --------------------------------------------------------
-    
-    
-      // TODO: 不管参数存在与否，获取新数据之后，重新勾选之前选中的
-      // const { data } = useRequest(async () => {
-      //   const result = await getData();
-      //   return result.data;
-      //   setMembers(result.data)
-      //   setSelectedRowKeys(selectedRowInfos?.map((item) => item.id));
-      // });
+    console.log('fetch', value, selectedTableRef, ) 
+
+    userList(1, 20, 500)
+
   };
 
 
@@ -119,14 +146,10 @@ const MemberModifyForm: React.FC<MemberModifyFormProps> = ({
     fetch(e.target.value);
   };
 
-  // 选中项发生变化时的回调
-  const handleChange = (newSelectedRowKeys: React.Key[], selectedRows: any, info: {type}) => {
-    console.log('newSelectedRowKeys', newSelectedRowKeys, selectedRows, info)
-  }
   
   // 用户手动选择/取消选择某行的回调
-  const handleSelect = (record, selected, selectedRows, nativeEvent) => {
-    console.log('用户手动选择/取消选择某行的回调', record, selected, selectedRows, nativeEvent)
+  const handleSelect = (record: Member, selected: boolean, selectedRows: Member[]) => {
+    console.log('用户手动选择/取消选择某行的回调', record, selected, selectedRows)
     if (selected) {
       console.log('如果勾选')
       setSelectedRowKeys([...selectedRowKeys, record.id]);
@@ -142,7 +165,7 @@ const MemberModifyForm: React.FC<MemberModifyFormProps> = ({
   }
 
   // 用户手动选择/取消选择所有行的回调
-  const handleSelectAll = (selected, selectedRows, changeRows) => {
+  const handleSelectAll = (selected: boolean, selectedRows: Member[], changeRows: Member[]) => {
     console.log('用户手动选择/取消选择所有行的回调', selected, selectedRows, changeRows)
     if (selected) {
       const newSelectedkeys = [...selectedRowKeys, ...changeRows.map((item) => item.id)]
@@ -152,9 +175,9 @@ const MemberModifyForm: React.FC<MemberModifyFormProps> = ({
       setSelectedRowInfos(newSelectedRowInfos)
     } else {
       // 根据 旧的选中id数组、现在状态改变的数组 过滤掉出取消勾选的信息
-      const handleCounterElection = (allSelected, changeItem) => {
-        const res = allSelected.filter((item) => {
-         return !changeItem.some((arg) => (arg.id === (item?.id ? item?.id : item)))
+      const handleCounterElection = (allSelected: any[], changeItem: Member[]) => {
+        const res = allSelected.filter((item: any) => {
+         return !changeItem.some((arg: Member) => (arg.id === (item?.id ? item?.id : item)))
         })
         return res
       }
@@ -165,17 +188,16 @@ const MemberModifyForm: React.FC<MemberModifyFormProps> = ({
     }
   }
 
-  const rowSelection = {
+  const rowSelection: TableRowSelection<Member> = {
     selectedRowKeys,
-    onChange: handleChange,
     onSelect: handleSelect,
     onSelectAll: handleSelectAll,
   };
   console.log('selectedRowKeys', selectedRowKeys)
-  console.log('selectedRowInfos', selectedRowInfos)
+  console.log('selectedRowInfos', selectedRowInfos, JSON.stringify(selectedRowInfos))
 
   // 添加成员弹框中的删除
-  const handleDeleteMember = (item: any) => {
+  const handleDeleteMember = (item: selectedRowInfoType) => {
     console.log('item', item, item.id)
     setSelectedRowKeys(selectedRowKeys.filter(arg => arg !== item.id))
     setSelectedRowInfos(selectedRowInfos.filter(arg => arg.id !== item.id))
@@ -193,31 +215,35 @@ const MemberModifyForm: React.FC<MemberModifyFormProps> = ({
   };
 
   return (
-    <div className="flex flex-col h-[480px] overflow-hidden">
+    <div className="flex flex-col max-h-[530px] overflow-hidden">
       <div className="flex divide-x pl-6 flex-1 overflow-hidden">
-        <div className="flex-1 space-y-3 py-[12px] pr-[16px] border-0 border-r-[1px] border-slate-200 border-solid">
+        <div className="flex-1 space-y-3 pt-[12px] pr-[16px] border-0 border-r-[1px] border-slate-200 border-solid">
+          <div className="flex flex-col">
           <Input
             className={styles['custom-search-container-style']}
             prefix={<SearchOutlined />}
             placeholder="请输入姓名或工号搜索"
             value={inputValue}
             onChange={handleSearch}
-          />
-          <div ref={selectedTableRef}>
-            <Table
-              rowKey="id"
-              className={cx({
-                [styles['custom-table-container-style']]: !members?.length
-              })}
-              pagination={false}
-              dataSource={members}
-              columns={columns}
-              loading={loading}
-              rowSelection={rowSelection}
-              scroll={{
-                y: 300,
-              }}
-            ></Table>
+            />
+            <div>
+              <Table
+                rowKey="id"
+                className={cx({
+                  [styles['custom-table-container-style']]: !members?.length,
+                  [styles['custom-table-pagination-style']]: true
+                })}
+                pagination={paginationConfig}
+                dataSource={data?.list}
+                columns={columns}
+                loading={loading}
+                rowSelection={rowSelection}
+                scroll={{
+                  y: 300,
+                }}
+              />
+                {/* dataSource={members} */}
+            </div>
           </div>
         </div>
         <div className="w-[300px] pl-[16px] pt-[12px] pr-[16px] overflow-y-auto">
