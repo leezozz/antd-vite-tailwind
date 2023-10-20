@@ -15,12 +15,15 @@ interface MemberConfigFormProps {
 }
 
 // 使用antd-style修改内置的嵌套样式
-const useStyles = createStyles(({ token, css }) => ({
+const useStyles = createStyles(() => ({
   'custom-add-member-modal-style': {
     '.ant-modal-confirm-paragraph': {
-        maxWidth: '100%',
-        rowGap: 0
-      }
+      maxWidth: '100%',
+      rowGap: 0
+    }
+  },
+  'custom-table-style': {
+    marginBottom: '8px!important',
   }
 }))
 
@@ -29,6 +32,7 @@ const MemberConfigForm: React.FC<MemberConfigFormProps> = ({ projectId }) => {
   const [members, setMembers] = useState<Member[]>([]);
   const [loading, setLoading] = useState(true);
   const [modal, contextHolder] = Modal.useModal();
+
   useEffect(() => {
     setLoading(true);
     setTimeout(() => {
@@ -142,9 +146,9 @@ const MemberConfigForm: React.FC<MemberConfigFormProps> = ({ projectId }) => {
       </Button>
       <Table
         rowKey="id"
-        className="mb-[8px!important]"
-        pagination={false}
+        className={styles['custom-table-style']}
         dataSource={members}
+        pagination={false}
         columns={columns}
         loading={loading}
         scroll={{
