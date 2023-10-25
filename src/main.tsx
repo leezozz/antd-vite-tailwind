@@ -9,7 +9,9 @@ import './index.css'
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <ConfigProvider locale={zhCN}>
-      <StyleProvider ><App /></StyleProvider>
+      <StyleProvider >
+        <App />
+      </StyleProvider>
     </ConfigProvider>
   </React.StrictMode>,
 )
