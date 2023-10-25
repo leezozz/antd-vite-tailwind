@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   Button,
   Col,
@@ -21,12 +21,12 @@ import {
   CloseOutlined,
 } from "@ant-design/icons";
 const { Header, Content } = Layout;
-import { useAntdTable, useSize } from "ahooks";
-import generateProjectList from "../mock/project";
+import { useAntdTable, useSize, useThrottleFn } from "ahooks";
+import generateProjectList from "../../mock/project";
 import type { ColumnsType } from "antd/es/table";
 import type { Dayjs } from "dayjs";
 import { createStyles } from "antd-style";
-import ProjectCreateForm from "./components/ProjectCreateForm";
+import ProjectCreateForm, {CreateFormData} from "./components/ProjectCreateForm";
 import MemberConfigForm from "./components/MemberConfigForm";
 
 type ProjectStatus = "1" | "2" | "3";
@@ -119,7 +119,103 @@ const ProjectListPage = () => {
   const classNames = {
     content: styles["my-modal-content"],
   };
+
+  // 将国际化时间处理为标准时间  '2023-10-16'
+  const getymd = (dateStr: Dayjs) => {
+    // console.log('dateStr', dateStr)
+    return `${dateStr.year()}-${(dateStr.month() + 1).toString().padStart(2, '0')}-${dateStr.date().toString().padStart(2, '0')}`;
+  }
+
+  const handleModalOpen = () => {
+    console.log('123')
+  }
+
+  const openValue = useRef(false)
+  console.log('openValue', openValue)
+
+  // const { run: handleCreateProject } = useThrottleFn(
+  //   () => {
+  //     console.log('openValue.current 😈', openValue.current)
+  //     if (openValue.current) return
+  //     openValue.current = !openValue.current
+
+  //     const onFinished = async (value: CreateFormData) => {
+  //       console.log('新建项目', value, dayjs(value.time), getymd(value.time))
+  //       // TODO: 新建项目的接口
+  //       // const { error, data, msg } = await SharedApi.createProject({
+  //       //   'project': 'xxx'
+  //       // })
+  //       // if (!error) {
+  //       //   messageApi.success(`创建成功${JSON.stringify(value)}`);
+  //       //   destroy();
+  //       //   // TODO: 刷新表格的接口
+  //       //   search.submit();
+  //       // }
+  //     };
+
+  //     const { destroy } = modal.info({
+  //       title: (
+  //         <div className="flex justify-between border-b px-6 py-3">
+  //           <p>新建项目</p>
+  //           <CloseOutlined onClick={() => destroy()} />
+  //         </div>
+  //       ),
+  //       footer: null,
+  //       // afterOpenChange: handleModalOpen,
+  //       width: 1000,
+  //       content: (
+  //         <ProjectCreateForm
+  //           type='create'
+  //           onFinish={onFinished}
+  //           onClosed={() => destroy()}
+  //         />
+  //       ),
+  //       icon: (
+  //         <div className="flex w-20 items-center justify-center self-stretch rounded-l-lg bg-blue-500 text-white">
+  //           配图
+  //         </div>
+  //       ),
+  //     });
+  //   },
+  //   {
+  //   wait: 1000}
+  // )
+
+
+  // 节流函数
+  function throttle(func: () => void, wait: number) {
+    let inThrottle: boolean;
+    return function () {
+      console.log('arguments', arguments, this)
+      const args = arguments;
+      if (!inThrottle) {
+        func.apply(this, args);
+        inThrottle = true;
+        setTimeout(() => inThrottle = false, wait);
+      }
+    }
+  }
+  
   const handleCreateProject = () => {
+    
+    // console.log('openValue.current 😈', openValue.current)
+    // if (openValue.current) return
+    // openValue.current = !openValue.current
+    
+    const onFinished = async (value: CreateFormData) => {
+      console.log('新建项目', value, dayjs(value.time), getymd(value.time))
+      // TODO: 新建项目的接口
+      // const { error, data, msg } = await SharedApi.createProject({
+      //   'project': 'xxx'
+      // })
+      // if (!error) {
+      //   messageApi.success(`创建成功${JSON.stringify(value)}`);
+      //   destroy();
+      //   // TODO: 刷新表格的接口
+      //   search.submit();
+      // }
+    };
+
     const { destroy } = modal.info({
       title: (
         <div className="flex justify-between border-b px-6 py-3">
@@ -128,12 +224,13 @@ const ProjectListPage = () => {
         </div>
       ),
       footer: null,
+      // afterOpenChange: handleModalOpen,
       width: 1000,
       content: (
         <ProjectCreateForm
-          onFinish={() => {
-            destroy();
-          }}
+          type='create'
+          onFinish={onFinished}
+          onClosed={() => destroy()}
         />
       ),
       icon: (
@@ -143,6 +240,8 @@ const ProjectListPage = () => {
       ),
     });
   };
+
+  const throttledShowModal = throttle(handleCreateProject, 500);
 
   const handleConfigMember = (id: string) => {
     const { destroy } = modal.info({
@@ -262,8 +361,9 @@ const ProjectListPage = () => {
             <Button
               type="primary"
               icon={<PlusOutlined />}
-              onClick={handleCreateProject}
+              onClick={throttledShowModal}
             >
+              {/* onClick={handleCreateProject} */}
               新建项目
             </Button>
           </div>

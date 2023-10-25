@@ -12,9 +12,13 @@ export interface CreateFormData {
 }
 
 interface ProjectCreateFormProps {
+  data?: CreateFormData;
+  type: string;
   onFinish: (values: CreateFormData) => void;
   onClosed: () => void;
 }
+
+const dateFormat = 'YYYY-MM-DD';
 
 const ProjectCreateForm: React.FC<ProjectCreateFormProps> = ({
   onFinish,
@@ -45,8 +49,8 @@ const ProjectCreateForm: React.FC<ProjectCreateFormProps> = ({
         initialValues={{
           name: "",
           id: "2020BJIT0011",
-          time: "",
-          category: "default",
+          time: undefined,
+          category: undefined,
           director: "张三",
           description: "",
         }}
@@ -74,7 +78,7 @@ const ProjectCreateForm: React.FC<ProjectCreateFormProps> = ({
               label="立项时间"
               rules={[{ required: true }]}
             >
-              <DatePicker className="w-full" placeholder="请选择" />
+              <DatePicker format={dateFormat} className="w-full" placeholder="请选择" />
             </Form.Item>
           </Col>
         </Row>
@@ -86,6 +90,7 @@ const ProjectCreateForm: React.FC<ProjectCreateFormProps> = ({
               rules={[{ required: true }]}
             >
               <Select
+                placeholder="请选择"
                 options={[
                   { value: "default", label: "默认" },
                   { value: "categoryA", label: "分类A" },
