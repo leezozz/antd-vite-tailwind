@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import { Button, Col, DatePicker, Drawer, Form, Input, InputNumber, Layout, Row, Select, Space, Switch, Table, Tag } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { SearchOutlined } from "@ant-design/icons";
@@ -6,6 +6,7 @@ import { usePagination } from "ahooks";
 import { createStyles } from "antd-style";
 import cx from "classnames";
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
+import classNames from "classnames";
 
 type formDataType = {
   ruleName: string
@@ -119,10 +120,6 @@ const DataQuality: React.FC = () => {
 
   // const [loading, setLoading] = useState(false);
   const [activeRuleName, setActiveRuleName] = useState('');
-  // let activeRuleName: string
-  // {
-  //   rule: activeRuleName
-  // }
   const [searchParams] = useSearchParams()
   const { pathname } = useLocation()
   const nav = useNavigate()
@@ -196,6 +193,24 @@ const DataQuality: React.FC = () => {
     },
   ];
 
+  const CustomInputNumber = (props) => (
+    <div className="flex items-center">
+      <InputNumber
+        min={0}
+        {...props}
+        controls={false} 
+        placeholder="请输入"
+        addonBefore={
+          <span className="cursor-pointer" onClick={() => handleReduceNum()}>-</span>
+        }
+        addonAfter={
+          <span className="cursor-pointer" onClick={() => handleReduceNum('add')}>+</span>
+        }
+      />
+      <span className="ml-[8px]">行</span>
+    </div>  
+  )
+
   useEffect(
     () => {
       console.log('useEffect ------')
@@ -212,11 +227,11 @@ const DataQuality: React.FC = () => {
     // TODO: 接口获取API，抽屉接口：currentRowId
 
     setInitialData({
-      ruleName: "11",
+      ruleName: "22",
       ruleDescription: 'sasa',
       thresholdType: "1",
       expression: "1",
-      thresholdSize: undefined,
+      thresholdSize: 10,
     })
 
     setThresholdTypeOptions([
@@ -329,21 +344,25 @@ const DataQuality: React.FC = () => {
     onChange: pagination.onChange,
   } 
   console.log('data 😯', data, data?.list)
-
-  const changeNumber = (value: number) => {
-    form.setFieldValue('thresholdSize', value)
-    console.log('changed', value);
-  };
-
+  
   const showDrawer = (val: string) => {
     console.log('点击编辑', val);
     setOpen(true);
     setCurrentRowId(val);
   };
-
+  
   const onClose = () => {
     setOpen(false);
   };
+
+  const handleReduceNum = (type = 'reduce') => {
+    const currentValue = form.getFieldValue('thresholdSize')
+    const newValue = (type === 'add') ? (currentValue + 1 ) : (currentValue - 1 )
+    if (newValue >= 0) {
+      console.log('currentValue', currentValue, 'newValue', newValue)
+      form.setFieldValue("thresholdSize", newValue)
+    }
+  }
 
   const handleCancel = () => {
     console.log('取消')
@@ -477,16 +496,10 @@ const DataQuality: React.FC = () => {
                     <Form.Item
                       name="thresholdSize"
                       label="阈值大小"
-                      rules={[{ required: true }]}
                     >
-                        <div>
-                          {/* onChange={changeNumber} onStep={changeNumber}  */}
-                          <InputNumber
-                            min={0}
-                            onChange={changeNumber}
-                          />
-                        <span className="ml-[4px]">行</span>
-                      </div>
+                      {/* TODO: 只点击增减图标，点击提交如果必填会校验不通过 */}
+                      {/* rules={[{ required: true }]} */}
+                      <CustomInputNumber />
                     </Form.Item>
                   </Col>
                 </Row>
