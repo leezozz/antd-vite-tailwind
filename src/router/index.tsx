@@ -2,6 +2,7 @@ import { Navigate, createBrowserRouter } from 'react-router-dom'
 import ProjectListPage from "../module/project";
 import Layouts from '../layout';
 import DataQuality from '../module/data_center/page/data-quality';
+import Test from '../module/data_center/page/test';
 
 const router = createBrowserRouter([
   {
@@ -21,6 +22,11 @@ const router = createBrowserRouter([
   {
     path: '/test',
     element: <DataQuality />,
+  },
+  {
+    // 拆分表单form
+    path: '/test1',
+    element: <Test />,
   }
 ])
 
