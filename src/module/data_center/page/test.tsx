@@ -69,7 +69,9 @@ const Test: React.FC = () => {
         form={form}
         initialValues={initFormValues}
         preserve={false}
-        labelCol={{ span: 4 }}
+        labelCol={{
+          style: { width: 100 }
+        }}
         onFinish={(arg) => onFinish(arg, onClosed)}
         onFinishFailed={onFinishFailed}
       >
@@ -92,7 +94,9 @@ const Test: React.FC = () => {
                   <Form.Item<FieldType>
                     label="分隔符"
                     name="delimiter"
-                    labelCol={{ span: 4 }}
+                    labelCol={{
+                      style: { width: 100 }
+                    }}
                     rules={[{ required: true }]}
                   >
                     <Input className="w-[300px]"/>
@@ -100,7 +104,9 @@ const Test: React.FC = () => {
                   <Form.Item<FieldType>
                     label="拆分"
                     name="splitPositon"
-                    labelCol={{ span: 11 }}
+                    labelCol={{
+                      style: { width: 100 }
+                    }}
                     className="inline-block w-[220px]"
                   >
                       <Radio.Group>
@@ -121,7 +127,9 @@ const Test: React.FC = () => {
                   <Form.Item<FieldType>
                     label="拆分位置"
                     name="splitPositon"
-                    labelCol={{ span: 11 }}
+                    labelCol={{
+                      style: { width: 100 }
+                    }}
                     className="inline-block w-[220px]"
                   >
                       <Radio.Group>
