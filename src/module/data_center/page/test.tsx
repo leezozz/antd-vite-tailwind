@@ -2,6 +2,7 @@ import { CloseOutlined } from "@ant-design/icons";
 import { Button, ConfigProvider, Form, Input, InputNumber, Modal, Radio } from "antd"
 import { createStyles } from "antd-style";
 import { useEffect, useState } from "react";
+import CustomMergeForm from "../component/CustomMergeForm";
 
 type FieldType = {
   splitMethod: string;
@@ -161,8 +162,8 @@ const Test: React.FC = () => {
     </>
   )
 
-  const handleClick = () => { 
-    console.log('Click')
+  const handleSplitClick = () => { 
+    console.log('handleSplitClick')
         
     const { destroy } = modal.info({
       className: styles['custom-member-management-modal'],
@@ -179,16 +180,35 @@ const Test: React.FC = () => {
     })
   }
 
+  const handleMergeClick = () => { 
+    console.log('handleMergeClick---')
+        
+    const { destroy } = modal.info({
+      className: styles['custom-member-management-modal'],
+      title: (
+        <div className="flex justify-between px-6 border-0 border-b-[1px] border-slate-200 border-solid">
+          <p>合并字段</p>
+          <CloseOutlined onClick={() => destroy()} />
+        </div>
+      ),
+      footer: null,
+      width: 600,
+      content: <CustomMergeForm onClosed={ () => destroy() } />,
+      icon: <></>,
+    })
+  }
+
   return (
     <>
-      <Button onClick={handleClick}>拆分</Button>
+      <Button onClick={handleSplitClick}>拆分</Button>
+      <Button onClick={handleMergeClick}>合并</Button>
       <ConfigProvider
-          modal={{
-            classNames,
-          }}
-        >
-          <div>{contextHolder}</div>
-        </ConfigProvider>
+        modal={{
+          classNames,
+        }}
+      >
+        <div>{contextHolder}</div>
+      </ConfigProvider>
     </>
   )
 }
