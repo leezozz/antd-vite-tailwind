@@ -2,7 +2,6 @@ import { Button, Form, Input, Select, Space, Tag, theme } from "antd"
 import { DndContext, PointerSensor, closestCenter, useSensor, useSensors } from '@dnd-kit/core';
 import type { DragEndEvent } from '@dnd-kit/core/dist/types/index';
 import { FC, useEffect, useRef, useState, Tooltip } from "react";
-import type { InputRef } from 'antd';
 import { TweenOneGroup } from 'rc-tween-one';
 
 import {
@@ -12,6 +11,8 @@ import {
   useSortable,
 } from '@dnd-kit/sortable';
 import { CloseCircleOutlined, HolderOutlined, PlusOutlined } from "@ant-design/icons";
+import { createStyles } from "antd-style";
+import { LabeledValue } from "antd/es/select";
 
 type MergeFieldType = {
   newField: string;
@@ -37,11 +38,20 @@ interface OptionsType {
   label: string;
 }
 
+const useStyle = createStyles({
+  'custom-tag-mb-style': {
+    marginBottom: 0
+  },
+  'custom-tag-style': {
+    marginBottom: '16px!important'
+  }
+})
 
 const CustomMergeForm: React.FC<PropsType> = ({
   onClosed
 }) => {
 
+  const {styles} = useStyle()
   const [form] = Form.useForm();
 
   const initMergeFormValues = {
@@ -51,16 +61,13 @@ const CustomMergeForm: React.FC<PropsType> = ({
   }
 
   const { token } = theme.useToken();
-  const [tags, setTags] = useState(['Tag 1', 'Tag 2', 'Tag 3']);
-  const [selectVisible, setselectVisible] = useState(false);
-  const [inputValue, setInputValue] = useState('');
-  const [selectValue, setSelectValue] = useState('');
-  const inputRef = useRef<InputRef>(null);
+  const [selectVisible, setSelectVisible] = useState(false);
+  const [selectValue, setSelectValue] = useState<LabeledValue | object>({});
   const [options, setOptions] = useState<Array<OptionsType>>([])
 
   const [items, setItems] = useState<Item[]>([
     {
-      id: 'Tag 1',
+      id: '1',
       text: 'Tag 1',
     },
     {
@@ -72,12 +79,6 @@ const CustomMergeForm: React.FC<PropsType> = ({
       text: 'Tag 3',
     },
   ]);
-  // const sensors = useSensors(useSensor(PointerSensor, {
-  //   activationConstraint: {
-  //     delay: 100,
-  //     tolerance: 0,
-  //   }
-  // }));
   const sensors = useSensors(useSensor(PointerSensor));
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
@@ -95,35 +96,37 @@ const CustomMergeForm: React.FC<PropsType> = ({
   const DraggableTag: FC<DraggableTagProps> = (props) => {
     console.log('DraggableTag-----props', props)
     const { tag } = props;
-    const { listeners, setNodeRef, setActivatorNodeRef, transform, transition, isDragging } = useSortable({ id: tag.id });
+    const { listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: tag.id });
   
     const commonStyle = {
       display: 'inline-block',
       marginRight: '8px',
+      marginBottom: '8px',
       padding: '8px',
       borderRadius: '4px',
       backgroundColor: '#EAEDF2',
       cursor: 'move',
-      transition: 'unset', // Prevent element from shaking after drag
+      transition: 'unset', // 防止元素拖动后晃动
     };
   
     const style = transform
       ? {
           ...commonStyle,
           transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
-          transition: isDragging ? 'unset' : transition, // Improve performance/visual effect when dragging
+          transition: isDragging ? 'unset' : transition, // 提高拖动时的性能/视觉效果
         }
       : commonStyle;
   
     return (
-      
       <Tag
         style={style}
         ref={setNodeRef}
         closable
+        bordered={false}
+        closeIcon={<CloseCircleOutlined className="ml-[12px] text-[14px]"/>}
         onClose={() => handleClose(tag)}
       >
-        <span {...listeners}><HolderOutlined />{tag.text}</span>
+        <span {...listeners} className="text-[14px]"><HolderOutlined className="mr-[4px]" />{tag.text}</span>
       </Tag>
     );
   };
@@ -132,55 +135,53 @@ const CustomMergeForm: React.FC<PropsType> = ({
 
   useEffect(() => {
     setOptions([
-      { value: 'Tag 1', label: 'Tag 1' },
-      { value: 'lucy', label: 'Lucy' },
+      { value: '1', label: 'Tag 1' },
+      { value: 'lucy', label: 'Lucy标签' },
+      { value: '111', label: '回复看到了萨菲隆啦啦啦啦啦'},
       { value: 'Yiminghe', label: 'yiminghe'},
       { value: 'disabled', label: 'Disabled'},
     ])
   }, [])
 
-  useEffect(() => {
-    console.log('useEffect+++++', selectVisible)
-    if (selectVisible) {
-      console.log('focus------', selectVisible)
-      inputRef.current?.focus();
-    }
-  }, [selectVisible]);
-
   const handleClose = (removedTag: Item) => {
     console.log('删除 🍠', removedTag)
     const newTags = items.filter((tag) => tag.id !== removedTag.id);
     console.log(newTags);
-    // setTags(newTags);
     setItems(newTags)
   };
 
   const showInput = () => {
-    setselectVisible(true);
+    setSelectVisible(true);
   };
   
-  const handleChange = (value: string) => {
+  const handleChange = (value: { value: string; label: string }) => {
     console.log('🌲', value, selectValue, items)
-    // setSelectValue(value)
-    // if (value && tags.indexOf(value) === -1) {
-    if (value && !items.some((arg) => arg?.id === value)) {
+    if (value && !items.some((arg) => arg?.id === value.value)) {
+      setSelectValue({
+        label: value.label,
+        value: value.value
+      })
       setItems([...items, {
-        id: value,
-        text: value
+        id: value.value,
+        text: value.label
       }]);
     }
-    setselectVisible(false);
-    setSelectValue('')
+    setSelectVisible(false);
+    setSelectValue({})
   }
   
   const handleBlur = () => {
-    console.log('################################')
-    setselectVisible(false);
+    setSelectVisible(false);
   }
 
   const tagPlusStyle: React.CSSProperties = {
+    marginBottom: '8px',
+    padding: '8px 16px',
+    fontSize: '14px',
     background: token.colorBgContainer,
     borderStyle: 'dashed',
+    borderColor: '#3A86EF',
+    color: '#3A86EF'
   };
 
   const CustomTags = () => {
@@ -188,7 +189,7 @@ const CustomMergeForm: React.FC<PropsType> = ({
     
     return (
       <>
-        <div style={{ marginBottom: 16 }}>
+        <div className="inline-block">
           <TweenOneGroup
             enter={{
               scale: 0.8,
@@ -204,30 +205,30 @@ const CustomMergeForm: React.FC<PropsType> = ({
             leave={{ opacity: 0, width: 0, scale: 0, duration: 200 }}
             appear={false}
           >
-            {/* {tagChild} */}
             <DndContext sensors={sensors} onDragEnd={handleDragEnd} collisionDetection={closestCenter}>
               <SortableContext items={items} strategy={horizontalListSortingStrategy}>
                 {items.map((item) => (
                   <DraggableTag tag={item} key={item.id} />
                 ))}
+                {/* 显示：添加，下拉框 */}
+                {selectVisible ? (
+                  <Select
+                    labelInValue
+                    value={selectValue}
+                    style={{ width: 120, height: '38px', marginBottom: '8px' }}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    options={options}
+                  />
+                ) : (
+                  <Tag onClick={showInput} style={tagPlusStyle}>
+                    <PlusOutlined /> 添加
+                  </Tag>
+                )}
               </SortableContext>
             </DndContext>
           </TweenOneGroup>
         </div>
-        {selectVisible ? (
-          <Select
-            defaultValue=""
-            value={selectValue}
-            style={{ width: 120 }}
-            onChange={handleChange}
-            onBlur={handleBlur}
-            options={options}
-          />
-        ) : (
-          <Tag onClick={showInput} style={tagPlusStyle}>
-            <PlusOutlined /> 添加
-          </Tag>
-        )}
       </>  
     )
   }
@@ -273,6 +274,7 @@ const CustomMergeForm: React.FC<PropsType> = ({
             style: { width: 120 }
           }}
           rules={[{ required: true }]}
+          className="mb-[12px]"
         >
           <CustomTags />
         </Form.Item>
