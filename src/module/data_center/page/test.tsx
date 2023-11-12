@@ -22,6 +22,12 @@ const useStyle = createStyles({
   }
 })
 
+// TODO: hidden 
+/**
+ * 拆分字段：根据第一个表单项选择不同，显示不同的剩余表单项。【表单部分渲染更新：使用shouldUpdate属性，或者使用hidden属性（不会频繁操作DOM，通过css隐藏）】
+ * 合并字段：tag标签拖拽、添加、删除
+ * @returns 
+ */
 const Test: React.FC = () => {
   console.log('Testing')
 
