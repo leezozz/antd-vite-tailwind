@@ -150,7 +150,7 @@ const CustomMergeForm: React.FC<PropsType> = ({
     setItems(newTags)
   };
 
-  const showInput = () => {
+  const showSelect = () => {
     setSelectVisible(true);
   };
   
@@ -221,7 +221,7 @@ const CustomMergeForm: React.FC<PropsType> = ({
                     options={options}
                   />
                 ) : (
-                  <Tag onClick={showInput} style={tagPlusStyle}>
+                  <Tag onClick={showSelect} style={tagPlusStyle}>
                     <PlusOutlined /> 添加
                   </Tag>
                 )}
