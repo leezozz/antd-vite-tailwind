@@ -1,5 +1,6 @@
 import { Button, Form, Input, InputNumber, Radio } from "antd";
 import React from "react";
+import CustomInputNumber from "./CustomInputNumber";
 
 interface Props {
   onClosed: () => void;
@@ -104,7 +105,7 @@ const CustomSplitForm: React.FC<Props> = ({ onClosed }) => {
                     name="splitNum"
                     className="inline-block"
                   >
-                    <InputNumber min={1} />
+                    <CustomInputNumber label={"个"} />
                   </Form.Item>
                 </>
               );
@@ -128,7 +129,7 @@ const CustomSplitForm: React.FC<Props> = ({ onClosed }) => {
                     name="splitNum"
                     className="inline-block"
                   >
-                    <InputNumber min={1} />
+                    <CustomInputNumber label={"个字符处"} />
                   </Form.Item>
                 </>
               );

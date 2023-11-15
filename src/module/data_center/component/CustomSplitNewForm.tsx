@@ -1,5 +1,6 @@
 import { Button, Form, FormInstance, Input, InputNumber, Radio } from "antd";
 import React, { useEffect } from "react";
+import CustomInputNumber from "./CustomInputNumber";
 
 interface Props {
   form: FormInstance
@@ -117,7 +118,7 @@ const CustomSplitNewForm: React.FC<Props> = ({ form, onClosed, onFinished }) => 
             name={["separatorOption", "splitNum"]}
             className="inline-block"
           >
-            <InputNumber className="w-[300px]" />
+            <CustomInputNumber label={"个"} />
           </Form.Item>
         </Form.Item>
         <Form.Item className="mb-[0]" hidden={splitMethod === "separator"}>
@@ -138,7 +139,7 @@ const CustomSplitNewForm: React.FC<Props> = ({ form, onClosed, onFinished }) => 
             name={["charactersOption", "splitNum"]}
             className="ml-[12px] inline-block"
           >
-            <InputNumber className="w-[300px]" />
+            <CustomInputNumber label={"个字符处"} />
           </Form.Item>
         </Form.Item>
       </Form>
