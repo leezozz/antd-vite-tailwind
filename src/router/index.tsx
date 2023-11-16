@@ -3,6 +3,7 @@ import ProjectListPage from "../module/project";
 import Layouts from '../layout';
 import DataQuality from '../module/data_center/page/data-quality';
 import Test from '../module/data_center/page/test';
+import DataGovernancePreview from '../module/data_center/page/data-preview';
 
 const router = createBrowserRouter([
   {
@@ -27,6 +28,11 @@ const router = createBrowserRouter([
     // 拆分表单form
     path: '/test1',
     element: <Test />,
+  }, 
+  {
+    // 数据预览
+    path: '/test2',
+    element: <DataGovernancePreview />,
   }
 ])
 

@@ -67,6 +67,7 @@ const CustomInputNumber: React.FC<custIptType> = (props) => {
           min={props.minValue || 0}
           {...props}
           controls={false} 
+          precision={0}
           placeholder="请输入"
           className={cx({
             [styles['custom-iptnumber-container']]: disabledStyle,
