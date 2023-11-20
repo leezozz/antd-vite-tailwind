@@ -63,6 +63,7 @@ const CustomInputNumber: React.FC<custIptType> = (props) => {
   return (
     <>
       <div className="flex items-center">
+        {/* precision: 0 不保留小数 */}
         <InputNumber
           min={props.minValue || 0}
           {...props}
