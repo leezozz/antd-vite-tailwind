@@ -4,6 +4,7 @@ import Layouts from "../layout";
 import DataQuality from "../module/data_center/page/data-quality";
 import Test from "../module/data_center/page/test";
 import DataGovernancePreview from "../module/data_center/page/data-preview";
+import TestAnchor from "../module/Test/page/TestAnchor";
 
 const router = createBrowserRouter([
   {
@@ -34,6 +35,11 @@ const router = createBrowserRouter([
     // 数据预览
     path: "/test2",
     element: <DataGovernancePreview />,
+  },
+  {
+    // anchor描点
+    path: "/anchor",
+    element: <TestAnchor />,
   },
 ]);
 
