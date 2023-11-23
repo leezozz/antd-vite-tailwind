@@ -1,6 +1,7 @@
 import { faker } from "@faker-js/faker";
 import { Anchor, Col, Layout, Row } from "antd";
 import { MouseEvent, ReactNode, useEffect, useRef, useState } from "react";
+import { mockItems } from "../data";
 
 /**
  * 测试antd组件库中的anchor描点
@@ -10,7 +11,6 @@ const TestAnchor: React.FC = () => {
   const { Header, Footer, Sider, Content } = Layout;
   const headerStyle: React.CSSProperties = {
     textAlign: "center",
-    // color: '#fff',
     height: 64,
     paddingInline: 50,
     lineHeight: "64px",
@@ -20,27 +20,23 @@ const TestAnchor: React.FC = () => {
   const contentStyle: React.CSSProperties = {
     textAlign: "center",
     overflowY: 'auto',
-    // color: '#fff',
-    // backgroundColor: '#108ee9',
   };
 
   const siderStyle: React.CSSProperties = {
     textAlign: "center",
-    // lineHeight: '120px',
-    // height: '100%',
     backgroundColor: "#fff",
-    // color: '#fff',
-    // backgroundColor: '#3ba0e9',
   };
 
   const footerStyle: React.CSSProperties = {
     textAlign: "center",
-    // color: '#fff',
     backgroundColor: "#fff",
   };
 
   const [currentLink, setCurrentLink] = useState("");
   const containerRef = useRef(null);
+
+  const mockData = mockItems()
+  console.log('mockData', mockData)
 
   const handleClick = (
     e: MouseEvent<HTMLElement, MouseEvent>,

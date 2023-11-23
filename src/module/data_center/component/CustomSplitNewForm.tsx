@@ -118,7 +118,7 @@ const CustomSplitNewForm: React.FC<Props> = ({ form, onClosed, onFinished }) => 
             name={["separatorOption", "splitNum"]}
             className="inline-block"
           >
-            <CustomInputNumber label={"个"} />
+            <CustomInputNumber height={56} label={"个"} />
           </Form.Item>
         </Form.Item>
         <Form.Item className="mb-[0]" hidden={splitMethod === "separator"}>

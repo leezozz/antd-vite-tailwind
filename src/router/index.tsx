@@ -5,6 +5,7 @@ import DataQuality from "../module/data_center/page/data-quality";
 import Test from "../module/data_center/page/test";
 import DataGovernancePreview from "../module/data_center/page/data-preview";
 import TestAnchor from "../module/Test/page/TestAnchor";
+import DataTableSet from "../module/data_table_set/page";
 
 const router = createBrowserRouter([
   {
@@ -40,6 +41,11 @@ const router = createBrowserRouter([
     // anchor描点
     path: "/anchor",
     element: <TestAnchor />,
+  },
+  {
+    // 数据表设置
+    path: "/data-set",
+    element: <DataTableSet />,
   },
 ]);
 
