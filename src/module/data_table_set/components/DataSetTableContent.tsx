@@ -14,25 +14,25 @@ import { createStyles } from "antd-style";
 import { useEffect, useState } from "react";
 
 const useStyle = createStyles({
-  'select-column-type': {
-    '.ant-select-selector': {
-      color: '#3A86EF'
+  "select-column-type": {
+    ".ant-select-selector": {
+      color: "#3A86EF",
     },
-    '.ant-select-arrow': {
-      color: '#3A86EF'
+    ".ant-select-arrow": {
+      color: "#3A86EF",
     },
   },
-  'data-set-table': {
-    '.ant-table-thead': {
-      'th': {
-        padding: '6px 12px!important'
-      }
+  "data-set-table": {
+    ".ant-table-thead": {
+      th: {
+        padding: "6px 12px!important",
+      },
     },
-  }
-})
+  },
+});
 
 const DataSetTableContent: React.FC = () => {
-  const { styles } = useStyle()
+  const { styles } = useStyle();
   const [form] = Form.useForm();
   const [locationOptions, setLocationOptions] = useState<
     SelectProps["options"]
@@ -250,20 +250,12 @@ const DataSetTableContent: React.FC = () => {
         <>
           <div className="flex items-center">
             <Select
-              className={styles['select-column-type']}
-              defaultValue={'#'}
+              className={styles["select-column-type"]}
+              defaultValue="#"
               bordered={false}
               optionLabelProp="value"
               options={typeOptions}
               popupMatchSelectWidth={false}
-              optionRender={(option: any) => (
-                <Space>
-                  <span role="img" aria-label={option.data.label}>
-                    {option.data.tag}
-                  </span>
-                  {option.data.desc}
-                </Space>
-              )}
             />
             {!(editItem === columnItem.key) ? (
               <div className="flex justify-between">
@@ -357,15 +349,13 @@ const DataSetTableContent: React.FC = () => {
           </Row>
         </Form>
         {/* TODO: table样式 */}
-        <div className="h-full w-full">
-          <Table
-            className={styles['data-set-table']}
-            dataSource={dataSource}
-            columns={columns}
-            bordered
-            pagination={false}
-          />
-        </div>
+        <Table
+          className={styles["data-set-table"]}
+          dataSource={dataSource}
+          columns={columns}
+          bordered
+          pagination={false}
+        />
       </div>
     </>
   );

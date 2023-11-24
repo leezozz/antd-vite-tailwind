@@ -1,8 +1,9 @@
 import { CloseOutlined } from "@ant-design/icons";
 import AssociationCreateModal from "../components/AssociationCreateModal";
-import { Button, Modal, Menu, ConfigProvider, } from "antd";
+import { Button, Modal, Menu, ConfigProvider } from "antd";
 import { createStyles } from "antd-style";
 import DataSetTableContent from "../components/DataSetTableContent";
+import { useEffect, useState } from "react";
 
 type MenuType = {
   file_id: string;
@@ -26,36 +27,39 @@ const useStyle = createStyles({
     display: "flex",
     width: "100%",
     height: "calc(100vh - 32px)",
+    overflow: "hidden",
     borderRadius: "8px",
     backgroundColor: "#fff",
     boxShadow: "0px 1px 4px 0px rgba(0,0,0,0.08)",
   },
   "data-table-left": {
     width: "324px",
-    minWidth: '324px',
+    minWidth: "324px",
     borderRight: "1px solid #DEE2EA",
   },
-  'side-navbar-menu-box': {
+  "side-navbar-menu-box": {
     ".ant-menu": {
       borderInlineEnd: "none !important",
       background: "#ffffff !important",
     },
     // 分组标题样式
     ".ant-menu-submenu-title": {
-      fontWeight: 600
+      fontWeight: 600,
     },
-    '.ant-menu-vertical-right': {
-      borderRight: 'none'
-    }
+    ".ant-menu-vertical-right": {
+      borderRight: "none",
+    },
   },
   "data-table-container": {
-    width: '100%',
+    width: "calc(100% - 324px)",
   },
 });
 
 const DataTableSet: React.FC = () => {
   const { styles } = useStyle();
   const [modal, contextHolder] = Modal.useModal();
+  const [defaultKey, setDefaultKey] = useState("");
+  const [defaultOpenKey, setDefaultOpenKey] = useState("");
 
   // const menuItems = [
   //   {
@@ -143,6 +147,12 @@ const DataTableSet: React.FC = () => {
 
   console.log('😈', convertData(menuItems))
 
+  useEffect(() => {
+    console.log("---useEffect");
+    setDefaultKey("1-1");
+    setDefaultOpenKey("1");
+  }, []);
+
   const showAssociateCreateModal = () => {
     const formData = {};
 
@@ -193,17 +203,15 @@ const DataTableSet: React.FC = () => {
                     activeBarWidth: 0,
                     itemHeight: 36,
                     itemMarginInline: 16,
-                    itemHoverBg: '#EFF1F4'
+                    itemHoverBg: "#EFF1F4",
                   },
                 },
               }}
             >
-              {/* TODO: 菜单样式修改 */}
-              {/* className="ml-[16px] mr-[24px]" */}
               <Menu
-                className={styles['side-navbar-menu-box']}
-                defaultSelectedKeys={["1-1"]}
-                defaultOpenKeys={['1']}
+                className={styles["side-navbar-menu-box"]}
+                selectedKeys={[defaultKey]}
+                openKeys={[defaultOpenKey]}
                 mode="inline"
                 items={convertData(menuItems)}
               />
