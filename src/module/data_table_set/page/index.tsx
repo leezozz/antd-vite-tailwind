@@ -4,6 +4,18 @@ import { Button, Modal, Menu, ConfigProvider, } from "antd";
 import { createStyles } from "antd-style";
 import DataSetTableContent from "../components/DataSetTableContent";
 
+type MenuType = {
+  file_id: string;
+  file_name: string;
+  sheet: MenuType[];
+}
+
+type StandardType = {
+  key: string;
+  label: string;
+  children: StandardType[] | undefined;
+}
+
 const useStyle = createStyles({
   "data-set-container": {
     height: "100%",
@@ -45,52 +57,91 @@ const DataTableSet: React.FC = () => {
   const { styles } = useStyle();
   const [modal, contextHolder] = Modal.useModal();
 
+  // const menuItems = [
+  //   {
+  //     label: "菜单1",
+  //     key: "1",
+  //     children: [
+  //       {
+  //         label: "菜单1-1",
+  //         key: "1-1",
+  //       },
+  //       {
+  //         label: "菜单1-2菜单1-2菜单1-2菜单1-2菜单1-2菜单1-2菜单1-2菜单1-2菜单1-2",
+  //         key: "1-2",
+  //         children: [
+  //           {
+  //             label: '菜单1-2-1',
+  //             key: '1-2-1'
+  //           }
+  //         ]
+  //       },
+  //       {
+  //         label: "菜单1-3",
+  //         key: "1-3",
+  //       },
+  //     ],
+  //   },
+  //   {
+  //     label: "菜单2",
+  //     key: "2",
+  //     children: [
+  //       {
+  //         label: "菜单2-1",
+  //         key: "2-1",
+  //       },
+  //     ],
+  //   },
+  //   {
+  //     label: "菜单3",
+  //     key: "3",
+  //     children: [
+  //       {
+  //         label: "菜单3-1",
+  //         key: "3-1",
+  //       },
+  //     ],
+  //   },
+  // ];
+
   const menuItems = [
     {
-      label: "菜单1",
-      key: "1",
-      children: [
+      file_name: "菜单1",
+      file_id: "1",
+      sheet: [
         {
-          label: "菜单1-1",
-          key: "1-1",
+          file_name: "菜单1-1",
+          file_id: "1-1",
         },
         {
-          label: "菜单1-2菜单1-2菜单1-2菜单1-2菜单1-2菜单1-2菜单1-2菜单1-2菜单1-2",
-          key: "1-2",
-          children: [
+          file_name: "菜单1-2菜单1-2菜单1-2菜单1-2菜单1-2菜单1-2菜单1-2菜单1-2菜单1-2",
+          file_id: "1-2",
+          sheet: [
             {
-              label: '菜单1-2-1',
-              key: '1-2-1'
+              file_name: '菜单1-2-1',
+              file_id: '1-2-1'
             }
           ]
         },
         {
-          label: "菜单1-3",
-          key: "1-3",
+          file_name: "菜单1-3",
+          file_id: "1-3",
         },
       ],
     },
-    {
-      label: "菜单2",
-      key: "2",
-      children: [
-        {
-          label: "菜单2-1",
-          key: "2-1",
-        },
-      ],
-    },
-    {
-      label: "菜单3",
-      key: "3",
-      children: [
-        {
-          label: "菜单3-1",
-          key: "3-1",
-        },
-      ],
-    },
-  ];
+  ]
+
+  const convertData = (menuItems: MenuType[]): StandardType[] => {
+    return menuItems.map((item: MenuType) => {
+      return {
+        key: item.file_id,
+        label: item.file_name,
+        children: item.sheet ? convertData(item.sheet) : undefined
+      }
+    })
+  }
+
+  console.log('😈', convertData(menuItems))
 
   const showAssociateCreateModal = () => {
     const formData = {};
@@ -151,9 +202,10 @@ const DataTableSet: React.FC = () => {
               {/* className="ml-[16px] mr-[24px]" */}
               <Menu
                 className={styles['side-navbar-menu-box']}
-                defaultSelectedKeys={["1"]}
+                defaultSelectedKeys={["1-1"]}
+                defaultOpenKeys={['1']}
                 mode="inline"
-                items={menuItems}
+                items={convertData(menuItems)}
               />
             </ConfigProvider>
           </div>
