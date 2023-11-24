@@ -8,6 +8,7 @@ import {
   Select,
   Table,
   Tooltip,
+  Space,
 } from "antd";
 import { createStyles } from "antd-style";
 import { useEffect, useState } from "react";
@@ -53,10 +54,10 @@ const DataSetTableContent: React.FC = () => {
     ]);
 
     setTypeOptions([
-      { value: "#", label: "# 数值" },
-      { value: "T", label: "T 字符" },
-      { value: "D", label: "D 日期" },
-      { value: "T/F", label: "T/F 布尔值" },
+      { value: "#", label: "# 数值", tag: '#1', desc: '数值' },
+      { value: "T", label: "T 字符", tag: 'T', desc: '字符' },
+      { value: "D", label: "D 日期", tag: 'D', desc: '日期'},
+      { value: "T/F", label: "T/F 布尔值", tag: 'T/F', desc: '布尔值' },
     ]);
 
     form.setFieldsValue({
@@ -248,18 +249,14 @@ const DataSetTableContent: React.FC = () => {
       title: (
         <>
           <div className="flex items-center">
-            {/* style={{ width: 70 }} */}
             <Select
               className={styles["select-column-type"]}
               defaultValue="#"
               bordered={false}
               optionLabelProp="value"
-              popupMatchSelectWidth={false}
               options={typeOptions}
-              onChange={(value: string) => setSelected(value)}
-            >
-              {selected}
-            </Select>
+              popupMatchSelectWidth={false}
+            />
             {!(editItem === columnItem.key) ? (
               <div className="flex justify-between">
                 <Tooltip title={columnItem.title} placement="topLeft">

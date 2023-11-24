@@ -6,6 +6,7 @@ import Test from "../module/data_center/page/test";
 import DataGovernancePreview from "../module/data_center/page/data-preview";
 import TestAnchor from "../module/Test/page/TestAnchor";
 import DataTableSet from "../module/data_table_set/page";
+import TestSelect from "../module/Test/page/TestSelect";
 
 const router = createBrowserRouter([
   {
@@ -46,6 +47,11 @@ const router = createBrowserRouter([
     // 数据表设置
     path: "/data-set",
     element: <DataTableSet />,
+  },
+  {
+    // 测试select
+    path: "/test-select",
+    element: <TestSelect />,
   },
 ]);
 
