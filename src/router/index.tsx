@@ -5,8 +5,9 @@ import DataQuality from "../module/data_center/page/data-quality";
 import Test from "../module/data_center/page/test";
 import DataGovernancePreview from "../module/data_center/page/data-preview";
 import TestAnchor from "../module/Test/page/TestAnchor";
-import DataTableSet from "../module/data_table_set/page";
+import DataTableSet from "../module/data_table_set/page/DataSetTable";
 import TestSelect from "../module/Test/page/TestSelect";
+import DataSetTablePage from "../module/data_table_set/page";
 
 const router = createBrowserRouter([
   {
@@ -46,7 +47,8 @@ const router = createBrowserRouter([
   {
     // 数据表设置
     path: "/data-set",
-    element: <DataTableSet />,
+    // element: <DataTableSet />,
+    element: <DataSetTablePage />,
   },
   {
     // 测试select
