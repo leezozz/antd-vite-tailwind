@@ -59,7 +59,7 @@ const DataTableSet: React.FC = () => {
   const { styles } = useStyle();
   const [modal, contextHolder] = Modal.useModal();
   const [defaultKey, setDefaultKey] = useState("");
-  const [defaultOpenKey, setDefaultOpenKey] = useState("");
+  const [defaultOpenKey, setDefaultOpenKey] = useState<string[]>([]);
 
   // const menuItems = [
   //   {
@@ -150,8 +150,18 @@ const DataTableSet: React.FC = () => {
   useEffect(() => {
     console.log("---useEffect");
     setDefaultKey("1-1");
-    setDefaultOpenKey("1");
+    setDefaultOpenKey(["1"]);
   }, []);
+
+  const handleClickMenu = ({ key }) => {
+    console.log('点击---', key)
+    setDefaultKey(key)
+  }
+
+  const changeClickMenu = (data) => {
+    console.log('点击---', data)
+    setDefaultOpenKey(data)
+  }
 
   const showAssociateCreateModal = () => {
     const formData = {};
@@ -211,9 +221,11 @@ const DataTableSet: React.FC = () => {
               <Menu
                 className={styles["side-navbar-menu-box"]}
                 selectedKeys={[defaultKey]}
-                openKeys={[defaultOpenKey]}
+                openKeys={defaultOpenKey}
                 mode="inline"
                 items={convertData(menuItems)}
+                onClick={handleClickMenu}
+                onOpenChange={changeClickMenu}
               />
             </ConfigProvider>
           </div>
