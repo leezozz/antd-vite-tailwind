@@ -24,6 +24,14 @@ type StandardType = {
 };
 
 const useStyle = createStyles({
+  "data-set-modal-container": {
+    ".ant-modal-content": {
+      padding: 0,
+    },
+    ".ant-modal-confirm-paragraph": {
+      maxWidth: "100%",
+    },
+  },
   "data-set-container": {
     backgroundColor: "#fff",
   },
@@ -142,6 +150,7 @@ const DataTableSet = (props: any, ref) => {
           <CloseOutlined onClick={() => destroy()} />
         </div>
       ),
+      className: styles["data-set-modal-container"],
       footer: null,
       width: 562,
       content: (
