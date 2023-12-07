@@ -10,8 +10,12 @@ import {
   Tooltip,
 } from "antd";
 import { createStyles } from "antd-style";
-import { ColumnsType } from "antd/es/table";
-import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
+import {
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useState,
+} from "react";
 
 interface Field {
   key: string;
@@ -49,6 +53,7 @@ const DataSetTableContent = (props, ref) => {
   const [typeOptions, setTypeOptions] = useState<SelectProps["options"]>([]);
   const [editItem, seteditItem] = useState("");
   const [columnsData, setColumnsData] = useState<Field[]>([]);
+  console.log('更新')
 
   useEffect(() => {
     setLocationOptions([
@@ -277,22 +282,46 @@ const DataSetTableContent = (props, ref) => {
     formValidate,
   }));
 
-  const handleBlur = () => {
-    console.log("blur");
-    seteditItem("");
+
+  let newColumn: Field[] = columnsData
+  let curIptValue = ''
+  const handleInput = (value: string, key: string, title: string) => {
+    console.log("input", value, key, title);
+    curIptValue = value
+    // const newColumn = columnsData.map((item: Field) => {
+    //   const newTitle = item.key === key ? value : item.new_field_name;
+    //   return {
+    //     ...item,
+    //     title: newTitle,
+    //   };
+    // });
+    // console.log("newColumn", newColumn);
+    // setColumnsData(newColumn);
   };
 
-  const handleInput = (value, key, title) => {
-    console.log("input", value, key, title);
+  const handleBlur = (key: string) => {
+    console.log("blur");
+    seteditItem("");
 
-    const newColumn = columnsData.map((item: Field) => {
-      const newTitle = item.key === key ? value : item.new_field_name;
+    newColumn = columnsData.map((item: Field) => {
+      const uniqueKey = (item.key === key)
+      const newTitle = (uniqueKey && curIptValue) ? curIptValue : item.new_field_name;
+      // if (newTitle !== item.new_field_name) {
+      //   setChangeTable({
+      //     ...changeTable,
+      //     [item?.field_name]: {
+      //       new_field_name: newTitle,
+      //       data_type: item.data_type,
+      //     }
+      //   })
+      // }
+
       return {
         ...item,
-        title: newTitle,
+        new_field_name: newTitle,
       };
     });
-    console.log("newColumn", newColumn);
+
     setColumnsData(newColumn);
   };
 
@@ -301,7 +330,7 @@ const DataSetTableContent = (props, ref) => {
   };
 
   const columns = columnsData.map((columnItem, index) => {
-    // console.log(columnItem, index);
+    console.log('表头更新了吗 test---')
     return {
       title: (
         <>
@@ -349,15 +378,15 @@ const DataSetTableContent = (props, ref) => {
                       columnItem.new_field_name,
                     )
                   }
-                  onBlur={handleBlur}
+                  onBlur={() => handleBlur(columnItem.key,)}
                 />
               </>
             )}
           </div>
         </>
       ),
-      dataIndex: columnItem.new_field_name,
-      key: columnItem.new_field_name,
+      dataIndex: columnItem.key,
+      key: columnItem.key,
     };
   });
 
@@ -369,7 +398,7 @@ const DataSetTableContent = (props, ref) => {
           form={form}
           autoComplete="off"
           labelAlign="right"
-          className="h-[112px] overflow-y-auto"
+          className="overflow-y-auto"
         >
           <Row>
             <Col span={8}>
