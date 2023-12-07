@@ -1,6 +1,7 @@
 import { CheckOutlined, EditOutlined } from "@ant-design/icons";
 import {
   type SelectProps,
+  type InputRef,
   Col,
   Form,
   Input,
@@ -14,6 +15,7 @@ import {
   forwardRef,
   useEffect,
   useImperativeHandle,
+  useRef,
   useState,
 } from "react";
 
@@ -53,6 +55,7 @@ const DataSetTableContent = (props, ref) => {
   const [typeOptions, setTypeOptions] = useState<SelectProps["options"]>([]);
   const [editItem, seteditItem] = useState("");
   const [columnsData, setColumnsData] = useState<Field[]>([]);
+  const inputRef = useRef<InputRef>(null);
   console.log('更新')
 
   useEffect(() => {
@@ -362,12 +365,20 @@ const DataSetTableContent = (props, ref) => {
                 </Tooltip>
                 <EditOutlined
                   className="cursor-pointer"
-                  onClick={() => seteditItem(columnItem.new_field_name)}
+                  onClick={() => {
+                    seteditItem(columnItem.new_field_name)
+                    setTimeout(() => {
+                      inputRef.current?.focus({
+                        cursor: 'end',
+                      });
+                    })
+                  }}
                 />
               </div>
             ) : (
               <>
                 <Input
+                  ref={inputRef}
                   suffix={<CheckOutlined />}
                   className="w-[110px]"
                   defaultValue={columnItem.new_field_name}
@@ -389,6 +400,24 @@ const DataSetTableContent = (props, ref) => {
       key: columnItem.key,
     };
   });
+
+  // 表格校验规则
+  // const validateTable = (rule, value) => {
+  //   console.log('规则 😁', rule, value)
+  //   for (const k in value) {
+  //     console.log('k', k, value[k])
+  //     const field = value[k]['new_field_name']
+  //     if (field.startsWith('_') || field.startsWith('0-9')) {
+  //       return Promise.reject('不能以数字或下划线开头');  
+  //     }
+      
+  //     if ( /[\u4e00-\u9fa5]/.test(field) ) {  
+  //       return Promise.reject('不能包含中文');
+  //     } 
+  //   }
+    
+  //   return Promise.resolve();
+  // }
 
   return (
     <>
@@ -442,14 +471,30 @@ const DataSetTableContent = (props, ref) => {
               </Form.Item>
             </Col>
           </Row>
+          <Form.Item
+            name="table"
+          >
+            {/* rules={[
+              {
+                validator: validateTable
+              }
+            ]} */}
+            <Table
+              className={styles["data-set-table"]}
+              dataSource={dataSource}
+              columns={columns}
+              bordered
+              pagination={false}
+            />
+          </Form.Item>
         </Form>
-        <Table
+        {/* <Table
           className={styles["data-set-table"]}
           dataSource={dataSource}
           columns={columns}
           bordered
           pagination={false}
-        />
+        /> */}
       </div>
     </>
   );
