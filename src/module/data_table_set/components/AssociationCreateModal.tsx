@@ -1,7 +1,6 @@
 import { Button, Divider, Form, Input, Select } from "antd";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { createStyles, cx } from "antd-style";
-import { useForm } from "antd/es/form/Form";
 import { PauseOutlined, PlusOutlined } from "@ant-design/icons";
 
 interface Props {
@@ -48,18 +47,14 @@ const useStyle = createStyles({
 
 const AssociationCreateModal: React.FC<Props> = ({
   formData,
+  loading,
   onFinish,
   onClosed,
 }) => {
   const { styles } = useStyle();
   const { TextArea } = Input;
   const [form] = Form.useForm();
-  const [checkNick, setCheckNick] = useState(false);
-  const [checkSqlNick, setCheckSqlNick] = useState(false);
   const [active, setActive] = useState("quick");
-
-  console.log("😯", formData, onFinish, onClosed);
-
   useEffect(
     () => {
       console.log('设置表单初始值')
@@ -88,7 +83,6 @@ const AssociationCreateModal: React.FC<Props> = ({
     // form.submit()
 
     if (active === 'quick') {
-      // setCheckNick(true)
       console.log('quick 校验')
       form.validateFields(['quick.data_name'])
       .then((values) => {
@@ -101,7 +95,6 @@ const AssociationCreateModal: React.FC<Props> = ({
     }
 
     if (active === 'sql') {
-      // setCheckSqlNick(true)
       form.validateFields(['sql.data_name'])
         .then((values) => {
           console.log('sql 校验通过', values)
@@ -176,65 +169,6 @@ const AssociationCreateModal: React.FC<Props> = ({
           >
             <Input placeholder="请输入" />
           </Form.Item>
-          {/* TODO:熟悉逻辑 */}
-          {/* <Form.Item label="数据表A" style={{ marginTop: 0, marginBottom: 16 }}>
-            <Form.Item<FieldType>
-              name="data_sheetA"
-              style={{
-                display: "inline-block",
-                width: 160,
-                marginRight: 8,
-              }}
-            >
-              <Select style={{ width: 160 }} placeholder="请选择数据表">
-                <Select.Option value="sheet1">数据表1</Select.Option>
-                <Select.Option value="sheet2">数据表2</Select.Option>
-              </Select>
-            </Form.Item>
-            <Form.Item<FieldType>
-              name="data_fieldA"
-              style={{
-                display: "inline-block",
-                width: 160,
-              }}
-            >
-              <Select style={{ width: 160 }} placeholder="请选择字段">
-                <Select.Option value="field1" placeholder="请输入">
-                  数据字段1
-                </Select.Option>
-                <Select.Option value="field2" placeholder="请输入">
-                  数据字段2
-                </Select.Option>
-              </Select>
-            </Form.Item>
-          </Form.Item>
-          <Form.Item label="数据表B" style={{ marginTop: 0, marginBottom: 16 }}>
-            <Form.Item<FieldType>
-              name="data_sheetB"
-              style={{
-                display: "inline-block",
-                width: 160,
-                marginRight: 8,
-              }}
-            >
-              <Select placeholder="请选择数据表">
-                <Select.Option value="sheet1">数据表1</Select.Option>
-                <Select.Option value="sheet2">数据表2</Select.Option>
-              </Select>
-            </Form.Item>
-            <Form.Item<FieldType>
-              name="data_fieldB"
-              style={{
-                display: "inline-block",
-                width: 160,
-              }}
-            >
-              <Select placeholder="请选择字段">
-                <Select.Option value="field1">数据字段1</Select.Option>
-                <Select.Option value="field2">数据字段2</Select.Option>
-              </Select>
-            </Form.Item>
-          </Form.Item> */}
           <Form.Item<FieldType>
             label="关联方式"
             labelCol={{
@@ -271,7 +205,7 @@ const AssociationCreateModal: React.FC<Props> = ({
             labelCol={{
               style: { width: 100 },
             }}
-            rules={[{ required: checkSqlNick }]}
+            rules={[{ required: true }]}
           >
             <Input placeholder="请输入" />
           </Form.Item>
@@ -290,7 +224,6 @@ const AssociationCreateModal: React.FC<Props> = ({
             labelCol={{
               style: { width: 100 },
             }}
-            rules={[{ required: checkSqlNick }]}
             style={{ marginTop: 0, marginBottom: 0 }}
           >
             <TextArea
@@ -302,7 +235,7 @@ const AssociationCreateModal: React.FC<Props> = ({
         </Form.Item>
       </Form>
       <div className="flex justify-end space-x-3 px-6 py-3 border-0 border-t-[1px] border-slate-200 border-solid">
-        <Button type="primary" htmlType="submit" onClick={handleSubmit}>
+        <Button type="primary" htmlType="submit" loading={loading.current} onClick={handleSubmit}>
           提交
         </Button>
         <Button htmlType="button" onClick={onClosed}>

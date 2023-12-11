@@ -1,127 +1,13 @@
-import { CheckOutlined, EditOutlined } from "@ant-design/icons";
-import {
-  type SelectProps,
-  type InputRef,
-  Col,
-  Form,
-  Input,
-  Row,
-  Select,
-  Table,
-  Tooltip,
-} from "antd";
-import { createStyles } from "antd-style";
-import {
-  forwardRef,
-  useEffect,
-  useImperativeHandle,
-  useRef,
-  useState,
-} from "react";
+import { Button, Col, Form, Input, Row } from "antd";
 
-interface Field {
-  key: string;
-  data_type: string;
-  new_field_name: string;
-  old_field_name: string;
-}
-
-const useStyle = createStyles({
-  "select-column-type": {
-    ".ant-select-selector": {
-      color: "#3A86EF",
-    },
-    ".ant-select-arrow": {
-      color: "#3A86EF",
-    },
-  },
-  "data-set-table": {
-    height: "calc(100% - 112px)",
-    overflow: "auto",
-    ".ant-table-thead": {
-      th: {
-        padding: "6px 12px!important",
-      },
-    },
-  },
-});
+import { forwardRef, useEffect, useImperativeHandle } from "react";
+import CustomTable from "./CustomTable";
 
 const DataSetTableContent = (props, ref) => {
-  const { styles } = useStyle();
   const [form] = Form.useForm();
-  const [locationOptions, setLocationOptions] = useState<
-    SelectProps["options"]
-  >([]);
-  const [typeOptions, setTypeOptions] = useState<SelectProps["options"]>([]);
-  const [editItem, seteditItem] = useState("");
-  const [columnsData, setColumnsData] = useState<Field[]>([]);
-  const inputRef = useRef<InputRef>(null);
-  console.log('更新')
+  console.log("更新 ☀️");
 
   useEffect(() => {
-    setLocationOptions([
-      {
-        label: "根目录",
-        value: "old",
-      },
-      {
-        label: "父目录",
-        value: "parent",
-      },
-    ]);
-
-    setTypeOptions([
-      { value: "Float32", label: "#", desc: "数值" },
-      { value: "String", label: "T", desc: "字符" },
-      { value: "Datetime", label: "D", desc: "日期" },
-      { value: "UInt8", label: "T/F", desc: "布尔值" },
-    ]);
-
-    setColumnsData([
-      {
-        key: "order",
-        data_type: "String",
-        new_field_name: "order",
-        old_field_name: "order",
-      },
-      {
-        key: "product",
-        data_type: "String",
-        new_field_name: "product",
-        old_field_name: "product",
-      },
-      {
-        key: "test",
-        data_type: "String",
-        new_field_name: "test",
-        old_field_name: "test",
-      },
-      {
-        key: "total",
-        data_type: "String",
-        new_field_name: "total",
-        old_field_name: "total",
-      },
-      {
-        key: "tax",
-        data_type: "String",
-        new_field_name: "tax",
-        old_field_name: "tax",
-      },
-      {
-        key: "car",
-        data_type: "String",
-        new_field_name: "car",
-        old_field_name: "car",
-      },
-      {
-        key: "all",
-        data_type: "String",
-        new_field_name: "all",
-        old_field_name: "all",
-      },
-    ]);
-
     form.setFieldsValue({
       data_name: "",
       show_name: "毛利日均-Sheet1",
@@ -129,139 +15,6 @@ const DataSetTableContent = (props, ref) => {
       notes: "",
     });
   }, [form]);
-
-  const dataSource = [
-    {
-      key: "1",
-      order: "4727197191846",
-      product: 217,
-      test: "217",
-      total: "2356",
-      tax: "217",
-      car: "667",
-      all: "674",
-    },
-    {
-      key: "2",
-      order: "4727197191846",
-      product: 217,
-      test: "217",
-      total: "2356",
-      tax: "217",
-      car: "667",
-      all: "674",
-    },
-    {
-      key: "3",
-      order: "4727197191846",
-      product: 217,
-      test: "217",
-      total: "2356",
-      tax: "217",
-      car: "667",
-      all: "674",
-    },
-    {
-      key: "4",
-      order: "4727197191846",
-      product: 217,
-      test: "217",
-      total: "2356",
-      tax: "217",
-      car: "667",
-      all: "674",
-    },
-    {
-      key: "5",
-      order: "4727197191846",
-      product: 217,
-      test: "217",
-      total: "2356",
-      tax: "217",
-      car: "667",
-      all: "674",
-    },
-    {
-      key: "6",
-      order: "4727197191846",
-      product: 217,
-      test: "217",
-      total: "2356",
-      tax: "217",
-      car: "667",
-      all: "674",
-    },
-    {
-      key: "7",
-      order: "4727197191846",
-      product: 217,
-      test: "217",
-      total: "2356",
-      tax: "217",
-      car: "667",
-      all: "674",
-    },
-    {
-      key: "8",
-      order: "4727197191846",
-      product: 217,
-      test: "217",
-      total: "2356",
-      tax: "217",
-      car: "667",
-      all: "674",
-    },
-    {
-      key: "9",
-      order: "4727197191846",
-      product: 217,
-      test: "217",
-      total: "2356",
-      tax: "217",
-      car: "667",
-      all: "674",
-    },
-    {
-      key: "10",
-      order: "4727197191846",
-      product: 217,
-      test: "217",
-      total: "2356",
-      tax: "217",
-      car: "667",
-      all: "674",
-    },
-    {
-      key: "11",
-      order: "4727197191846",
-      product: 217,
-      test: "217",
-      total: "2356",
-      tax: "217",
-      car: "667",
-      all: "674",
-    },
-    {
-      key: "12",
-      order: "4727197191846",
-      product: 217,
-      test: "217",
-      total: "2356",
-      tax: "217",
-      car: "667",
-      all: "674",
-    },
-    {
-      key: "13",
-      order: "4727197191846",
-      product: 217,
-      test: "217",
-      total: "2356",
-      tax: "217",
-      car: "667",
-      all: "674",
-    },
-  ];
 
   const formValidate = () => {
     console.log("form 校验");
@@ -285,139 +38,9 @@ const DataSetTableContent = (props, ref) => {
     formValidate,
   }));
 
-
-  let newColumn: Field[] = columnsData
-  let curIptValue = ''
-  const handleInput = (value: string, key: string, title: string) => {
-    console.log("input", value, key, title);
-    curIptValue = value
-    // const newColumn = columnsData.map((item: Field) => {
-    //   const newTitle = item.key === key ? value : item.new_field_name;
-    //   return {
-    //     ...item,
-    //     title: newTitle,
-    //   };
-    // });
-    // console.log("newColumn", newColumn);
-    // setColumnsData(newColumn);
+  const handleSubmit = () => {
+    console.log("提交", form.getFieldsValue());
   };
-
-  const handleBlur = (key: string) => {
-    console.log("blur");
-    seteditItem("");
-
-    newColumn = columnsData.map((item: Field) => {
-      const uniqueKey = (item.key === key)
-      const newTitle = (uniqueKey && curIptValue) ? curIptValue : item.new_field_name;
-      // if (newTitle !== item.new_field_name) {
-      //   setChangeTable({
-      //     ...changeTable,
-      //     [item?.field_name]: {
-      //       new_field_name: newTitle,
-      //       data_type: item.data_type,
-      //     }
-      //   })
-      // }
-
-      return {
-        ...item,
-        new_field_name: newTitle,
-      };
-    });
-
-    setColumnsData(newColumn);
-  };
-
-  const hangleChange = (value, item) => {
-    console.log("---", value, item);
-  };
-
-  const columns = columnsData.map((columnItem, index) => {
-    console.log('表头更新了吗 test---')
-    return {
-      title: (
-        <>
-          <div className="flex items-center">
-            <Select
-              className={styles["select-column-type"]}
-              defaultValue="#"
-              bordered={false}
-              optionLabelProp="label"
-              options={typeOptions}
-              popupMatchSelectWidth={false}
-              onChange={(value) => hangleChange(value, columnItem)}
-            />
-            {!(editItem === columnItem.new_field_name) ? (
-              <div className="flex justify-between">
-                <Tooltip title={columnItem.new_field_name} placement="topLeft">
-                  <span
-                    style={{
-                      width: 70,
-                      display: "inline-block",
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                      whiteSpace: "nowrap",
-                      verticalAlign: "middle",
-                    }}
-                  >
-                    {columnItem.new_field_name}
-                  </span>
-                </Tooltip>
-                <EditOutlined
-                  className="cursor-pointer"
-                  onClick={() => {
-                    seteditItem(columnItem.new_field_name)
-                    setTimeout(() => {
-                      inputRef.current?.focus({
-                        cursor: 'end',
-                      });
-                    })
-                  }}
-                />
-              </div>
-            ) : (
-              <>
-                <Input
-                  ref={inputRef}
-                  suffix={<CheckOutlined />}
-                  className="w-[110px]"
-                  defaultValue={columnItem.new_field_name}
-                  onChange={(e) =>
-                    handleInput(
-                      e.target.value,
-                      columnItem.new_field_name,
-                      columnItem.new_field_name,
-                    )
-                  }
-                  onBlur={() => handleBlur(columnItem.key,)}
-                />
-              </>
-            )}
-          </div>
-        </>
-      ),
-      dataIndex: columnItem.key,
-      key: columnItem.key,
-    };
-  });
-
-  // 表格校验规则
-  // const validateTable = (rule, value) => {
-  //   console.log('规则 😁', rule, value)
-  //   for (const k in value) {
-  //     console.log('k', k, value[k])
-  //     const field = value[k]['new_field_name']
-  //     if (field.startsWith('_') || field.startsWith('0-9')) {
-  //       return Promise.reject('不能以数字或下划线开头');  
-  //     }
-      
-  //     if ( /[\u4e00-\u9fa5]/.test(field) ) {  
-  //       return Promise.reject('不能包含中文');
-  //     } 
-  //   }
-    
-  //   return Promise.resolve();
-  // }
 
   return (
     <>
@@ -444,22 +67,22 @@ const DataSetTableContent = (props, ref) => {
               </Form.Item>
             </Col>
             <Col span={8}>
-              <Form.Item
-                label="展示名称"
-                name="show_name"
-                style={{ marginRight: 16 }}
-              >
+              <Form.Item label="展示名称" name="show_name">
                 <Input placeholder="请输入" />
               </Form.Item>
             </Col>
             <Col span={8}>
-              <Form.Item label="位置目录" name="location_directory">
-                <Select placeholder="请选择" options={locationOptions} />
+              <Form.Item
+                name="submit"
+                style={{ display: "flex", justifyContent: "flex-end" }}
+              >
+                {/* 提交逻辑：提交form表单的值，包括table表头修改过的值 */}
+                <Button type="primary" onClick={handleSubmit}>提交</Button>
               </Form.Item>
             </Col>
           </Row>
           <Row>
-            <Col span={24}>
+            <Col span={16}>
               <Form.Item
                 label="备注"
                 name="notes"
@@ -473,28 +96,17 @@ const DataSetTableContent = (props, ref) => {
           </Row>
           <Form.Item
             name="table"
+            style={{ height: "calc(100% - 112px)", marginBottom: 0 }}
           >
             {/* rules={[
               {
                 validator: validateTable
               }
             ]} */}
-            <Table
-              className={styles["data-set-table"]}
-              dataSource={dataSource}
-              columns={columns}
-              bordered
-              pagination={false}
-            />
+
+            <CustomTable />
           </Form.Item>
         </Form>
-        {/* <Table
-          className={styles["data-set-table"]}
-          dataSource={dataSource}
-          columns={columns}
-          bordered
-          pagination={false}
-        /> */}
       </div>
     </>
   );

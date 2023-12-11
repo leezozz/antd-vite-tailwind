@@ -137,7 +137,6 @@ const DataTableSet = (props: any, ref) => {
 
   const showAssociateCreateModal = () => {
     const formData = {};
-
     const onFinished = async (value: any) => {
       console.log("value", value);
       // 刷新列表api
