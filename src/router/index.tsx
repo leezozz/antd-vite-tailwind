@@ -8,6 +8,7 @@ import TestAnchor from "../module/Test/page/TestAnchor";
 import DataTableSet from "../module/data_table_set/page/DataSetTable";
 import TestSelect from "../module/Test/page/TestSelect";
 import DataSetTablePage from "../module/data_table_set/page";
+import MyComponent from "../module/Provider/page/MyComponent";
 
 const router = createBrowserRouter([
   {
@@ -54,6 +55,11 @@ const router = createBrowserRouter([
     // 测试select
     path: "/test-select",
     element: <TestSelect />,
+  },
+  {
+    // 测试provider
+    path: "/provider",
+    element: <MyComponent />,
   },
 ]);
 
