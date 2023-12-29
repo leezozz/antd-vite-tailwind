@@ -10,6 +10,7 @@ import TestSelect from "../module/Test/page/TestSelect";
 import DataSetTablePage from "../module/data_table_set/page";
 import MyComponent from "../module/Provider/page/MyComponent";
 import { IndexPage } from "../module/Provider/page/IndexPage";
+import TicTacToe from "../module/tic_tac_toe/page";
 
 const router = createBrowserRouter([
   {
@@ -62,6 +63,11 @@ const router = createBrowserRouter([
     path: "/provider",
     // element: <MyComponent />,
     element: <IndexPage />,
+  },
+  {
+    // 井字棋
+    path: "/game",
+    element: <TicTacToe />,
   },
 ]);
 
