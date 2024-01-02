@@ -1,7 +1,7 @@
 import { createStyles } from "antd-style";
 
 interface Props {
-  value: number,
+  value: string | null,
   onClick: () => void
 }
 
@@ -34,7 +34,6 @@ const Square: React.FC<Props> = ({
   onClick
 }) => {
   const { styles } = useStyle()
-  // const [newValue, setNewValue] = useState<null | string>(null)
 
   return (
     <button className={styles['square']} onClick={() => onClick()}>
