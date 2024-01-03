@@ -1,16 +1,29 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Board from "./Board";
+import { createStyles, cx } from "antd-style";
 
 interface History {
-  squares: string | null[]
-  coordinate: number[]
+  squares: string | null[];
+  coordinate: number[];
 }
 
+const useStyle = createStyles({
+  "current-selected-history-item": {
+    fontWeight: "bold",
+  },
+});
+
 const Game: React.FC = () => {
+  const { styles } = useStyle();
   // 状态提升，把Board组件的状态提升到Game父组件中。根据history渲染历史步骤
-  const [history, setHistory] = useState<History[]>([{ squares: Array(9).fill(null), coordinate: [] }]);
+  const [history, setHistory] = useState<History[]>([
+    { squares: Array(9).fill(null), coordinate: [] },
+  ]);
   const [xIsNext, setXIsNext] = useState(true);
   const [stepNumber, setStepNumber] = useState(0);
+  // true：升序； false：降序
+  const [sortBtn, setSortBtn] = useState(true);
+  const highLight = useRef<number[]>([])
 
   const calculateWinner = (squares: string | null[]) => {
     const lines = [
@@ -31,6 +44,7 @@ const Game: React.FC = () => {
         squares[a] === squares[b] &&
         squares[a] === squares[c]
       ) {
+        highLight.current = [a, b, c];
         return squares[a];
       }
     }
@@ -43,13 +57,13 @@ const Game: React.FC = () => {
   if (Winner) {
     status = "Winner: " + Winner;
   } else if (stepNumber === 9) {
-    status = '平局'
+    status = "平局";
   } else {
     status = "Next player: " + (xIsNext ? "X" : "O");
   }
 
   const handleClick = (i: number, coordinate: number[]) => {
-    console.log('点击', i, coordinate)
+    console.log("点击", i, coordinate);
     const newHistory = history.slice(0, stepNumber + 1);
     const current = newHistory[newHistory.length - 1];
     // 调用slice()方法创建了squares数组的一个副本，而不是直接在现有的数组上进行修改
@@ -65,7 +79,7 @@ const Game: React.FC = () => {
       history.concat([
         {
           squares: newSquares,
-          coordinate: coordinate
+          coordinate: coordinate,
         },
       ]),
     );
@@ -74,28 +88,52 @@ const Game: React.FC = () => {
   };
 
   const jumpTo = (step: number) => {
+    console.log("jumpTo", step);
     setStepNumber(step);
     setXIsNext(step % 2 === 0);
   };
 
   const moves = history.map((step, move) => {
-    const desc = move ? "Go to move #" + move + ' 坐标：[' + step.coordinate + ']' : "Go to game start";
+    const desc = move
+      ? "Go to move #" + move + " 坐标：[" + step.coordinate + "]"
+      : "Go to game start";
     return (
       <li key={move}>
-        <button onClick={() => jumpTo(move)}>{desc}</button>
+        <span>{move}</span>
+        <button
+          className={cx({
+            [styles["current-selected-history-item"]]: move === stepNumber,
+          })}
+          onClick={() => jumpTo(move)}
+        >
+          {desc}
+        </button>
       </li>
     );
   });
+
+  const handleSort = () => {
+    setSortBtn(!sortBtn);
+  };
 
   return (
     <>
       <div className="game flex flex-row">
         <div className="game-board">
-          <Board squares={current.squares} onClick={handleClick} />
+          <Board
+            squares={current.squares}
+            highPath={highLight.current}
+            onClick={handleClick}
+          />
         </div>
         <div className="game-info ml-[20px]">
           <div>{status}</div>
-          <ol className="pl-[30px]">{moves}</ol>
+          <div>
+            <button onClick={handleSort}>{sortBtn ? "降序" : "升序"}</button>
+          </div>
+          <ul className="list-none pl-[30px]">
+            {sortBtn ? moves : [...moves].reverse()}
+          </ul>
         </div>
       </div>
     </>

@@ -1,7 +1,7 @@
-import { createStyles } from "antd-style";
-
+import { createStyles, cx } from "antd-style";
 interface Props {
   value: string | null,
+  highLight: boolean,
   onClick: () => void
 }
 
@@ -11,7 +11,7 @@ const useStyle = createStyles({
     border: '1px solid #999',
     float: 'left',
     fontSize: '24px',
-    fontWeight: 'bold',
+    fontWeight: '700',
     lineHeight: '34px',
     height: '34px',
     marginRight: '-1px',
@@ -26,18 +26,25 @@ const useStyle = createStyles({
     '&:hover': {
       borderColor: '#999'
     }
+  },
+  'highLight-square-item': {
+    backgroundColor: '#dfe3e7'
   }
 })
 
 const Square: React.FC<Props> = ({
   value,
+  highLight = false,
   onClick
 }) => {
   const { styles } = useStyle()
 
   return (
-    <button className={styles['square']} onClick={() => onClick()}>
-      { value }
+    <button className={cx({
+      [styles['square']]: true,
+      [styles['highLight-square-item']]: highLight
+    })} onClick={() => onClick()}>
+      {value}
     </button>
   )
 }
