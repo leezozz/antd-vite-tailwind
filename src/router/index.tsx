@@ -27,6 +27,22 @@ const router = createBrowserRouter([
       },
     ],
   },
+  // 测试嵌套路由
+  // {
+  //   path: '/',
+  //   element: <Layouts />,
+  //   children: [
+  //     {
+  //       path: '',
+  //       element: <ProjectListPage />
+  //     },
+  //     {
+  //       // 拆分表单form
+  //       path: "/test1",
+  //       element: <Test />,
+  //     },
+  //   ]
+  // },
   {
     // 数据质量
     path: "/test",

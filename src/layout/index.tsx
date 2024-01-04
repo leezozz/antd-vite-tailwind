@@ -1,6 +1,5 @@
 import { Layout, Menu } from "antd";
 import { Outlet } from 'react-router-dom'
-import ProjectListPage from "../module/project";
 
 const { Header, Content, Footer } = Layout;
 
